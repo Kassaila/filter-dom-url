@@ -10,6 +10,7 @@ class Filter {
     );
   }
 
+  // Private methods
   _updateUrl() {
     this.url = new URL(window.location.href);
     this.filtersUrl = new URLSearchParams(this.url.searchParams);
@@ -30,14 +31,12 @@ class Filter {
 
   _parseFiltersFromUrl(paramsUrl) {
     const params = [...paramsUrl.entries()];
-    const objectFilters = {
-      filters: {},
-    };
+    const objectFilters = {};
 
     if (params.length === 0) return objectFilters;
 
     params.forEach((param) => {
-      objectFilters.filters[param[0]] = param[1].split(' ');
+      objectFilters[param[0]] = param[1].split(' ');
     });
 
     return objectFilters;
@@ -46,25 +45,22 @@ class Filter {
   _updateInputsFromUrl(paramsUrl) {
     const objectFilters = this._parseFiltersFromUrl(paramsUrl);
 
-    if (Object.keys(objectFilters.filters).length === 0) return;
+    if (Object.keys(objectFilters).length === 0) return;
 
-    const { $form } = this;
-    const { filterAttr } = this;
-
-    Object.keys(objectFilters.filters).forEach((type) => {
-      const filter = $form.querySelector(`[${filterAttr}="${type}"]`);
+    Object.keys(objectFilters).forEach((type) => {
+      const filter = this.$form.querySelector(`[${this.filterAttr}="${type}"]`);
       const filterType = this._checkInputType(filter);
 
       if (filterType === 'select-single') {
-        $form.querySelector(`[${filterAttr}="${type}"]`).value = objectFilters.filters[type][0];
+        this.$form.querySelector(`[${this.filterAttr}="${type}"]`).value = objectFilters[type][0];
       } else if (filterType === 'radio') {
-        $form.querySelector(
-          `[${filterAttr}="${type}"][value="${objectFilters.filters[type][0]}"]`,
+        this.$form.querySelector(
+          `[${this.filterAttr}="${type}"][value="${objectFilters[type][0]}"]`,
         ).checked = true;
       } else if (filterType === 'checkbox') {
-        objectFilters.filters[type].forEach((val) => {
-          $form.querySelector(
-            `[${filterAttr}="${type}"][value="${val}"]`,
+        objectFilters[type].forEach((val) => {
+          this.$form.querySelector(
+            `[${this.filterAttr}="${type}"][value="${val}"]`,
           ).checked = true;
         });
       }
@@ -129,14 +125,12 @@ class Filter {
   }
 
   _eventListeners() {
-    // Inputs change
     this.$form.querySelectorAll(`[${this.filterAttr}]`).forEach(($el) => {
       $el.addEventListener('change', (e) => {
         this._updateUrlFromInputs(e);
       });
     });
 
-    // Browser history
     window.addEventListener('popstate', () => {
       this._updateUrl();
 
@@ -146,6 +140,7 @@ class Filter {
     });
   }
 
+  // Public methods
   initFilters() {
     this._updateInputsFromUrl(this.filtersUrl);
 
