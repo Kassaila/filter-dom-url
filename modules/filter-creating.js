@@ -106,12 +106,57 @@ class Filter {
   }
 
   static _resetUrl() {
-    const emptyFiltersUrl = new URLSearchParams('');
+    _resetUrl.emptyFiltersUrl = new URLSearchParams('');
 
-    Filter._setFiltersToUrl(this.url, emptyFiltersUrl);
+    Filter._setFiltersToUrl(this.url, _resetUrl.emptyFiltersUrl);
   }
 
   static _resetInputs() {
     this.$form.reset();
   }
+  static _eventListeners() {
+    // Inputs change
+    $form.querySelectorAll(`[${this.filterAttr}]`).forEach(($el) => {
+      $el.addEventListener('change', (e) => {
+        Filter._updateUrlFromInputs(e);
+      });
+    });
+
+    // Browser history
+    window.addEventListener('popstate', () => {
+      Filter._updateUrl();
+
+      Filter._resetInputs();
+
+      Filter._updateInputsFromUrl(this.filtersUrl);
+    });
+  }
+
+  initFilters() {
+    Filter._updateInputsFromUrl(filtersUrl);
+
+    Filter._eventListeners();
+  }
+
+  updateInputs() {
+    Filter._updateInputsFromUrl(filtersUrl);
+  }
+
+  resetUrl() {
+    Filter._resetUrl();
+  }
+
+  resetInputs(form) {
+    Filter._resetInputs(form);
+  }
+
+  setFilters(newUrl) {
+    Filter._setFiltersToUrl(newUrl, filtersUrl);
+  }
+
+  getFilters() {
+    return Filter._parseFiltersFromUrl(filtersUrl);
+  }
 }
+
+export default Filter;
