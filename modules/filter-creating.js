@@ -21,7 +21,7 @@ class Filter {
     let inputType = null;
 
     if (tagName === 'select') {
-      inputType = input.multiple ? 'select-multi' : 'select-single';
+      inputType = input.multiple ? 'select-multiple' : 'select-single';
     } else if (tagName === 'input') {
       inputType = input.type;
     }
@@ -54,6 +54,18 @@ class Filter {
       switch (filterType) {
         case 'select-single': {
           this.$form.querySelector(`[${this.filterAttr}="${type}"]`).value = objectFilters[type][0];
+          break;
+        }
+        case 'select-multiple': {
+          const $selectOptions = [...this.$form.querySelector(`[${this.filterAttr}="${type}"]`).options];
+
+          $selectOptions.forEach(($selectOption) => {
+            const $option = $selectOption;
+
+            if (objectFilters[type].indexOf($option.value) >= 0) {
+              $option.selected = true;
+            }
+          });
           break;
         }
         case 'radio': {
@@ -98,6 +110,18 @@ class Filter {
         } else {
           this.filtersUrl.append(filterName, filterValue);
         }
+        break;
+      }
+      case 'select-multiple': {
+        const filterValues = [...target.options]
+          .filter((option) => option.selected)
+          .map((option) => option.value);
+
+        if (this.filtersUrl.has(filterName)) {
+          this.filtersUrl.delete(filterName);
+        }
+
+        this.filtersUrl.append(filterName, filterValues.join(' '));
         break;
       }
       case 'checkbox': {
