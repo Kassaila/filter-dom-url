@@ -51,18 +51,29 @@ class Filter {
       const filter = this.$form.querySelector(`[${this.filterAttr}="${type}"]`);
       const filterType = this._checkInputType(filter);
 
-      if (filterType === 'select-single') {
-        this.$form.querySelector(`[${this.filterAttr}="${type}"]`).value = objectFilters[type][0];
-      } else if (filterType === 'radio') {
-        this.$form.querySelector(
-          `[${this.filterAttr}="${type}"][value="${objectFilters[type][0]}"]`,
-        ).checked = true;
-      } else if (filterType === 'checkbox') {
-        objectFilters[type].forEach((val) => {
+      switch (filterType) {
+        case 'select-single': {
+          this.$form.querySelector(`[${this.filterAttr}="${type}"]`).value = objectFilters[type][0];
+          break;
+        }
+        case 'radio': {
           this.$form.querySelector(
-            `[${this.filterAttr}="${type}"][value="${val}"]`,
+            `[${this.filterAttr}="${type}"][value="${objectFilters[type][0]}"]`,
           ).checked = true;
-        });
+          break;
+        }
+        case 'checkbox': {
+          objectFilters[type].forEach((val) => {
+            this.$form.querySelector(
+              `[${this.filterAttr}="${type}"][value="${val}"]`,
+            ).checked = true;
+          });
+          break;
+        }
+        default: {
+          console.warn(`Type '${filterType}' is not yet supported.`);
+          break;
+        }
       }
     });
   }
@@ -75,32 +86,42 @@ class Filter {
     const isFilterChecked = target.checked;
     const filterParams = `${this.filtersUrl.get(filterName)}`.split(' ');
 
-    if (filterType === 'select-single' || filterType === 'radio') {
-      if (this.filtersUrl.has(filterName)) {
-        if (filterValue !== '') {
-          this.filtersUrl.set(filterName, filterValue);
+    switch (filterType) {
+      case 'select-single':
+      case 'radio': {
+        if (this.filtersUrl.has(filterName)) {
+          if (filterValue !== '') {
+            this.filtersUrl.set(filterName, filterValue);
+          } else {
+            this.filtersUrl.delete(filterName);
+          }
         } else {
-          this.filtersUrl.delete(filterName);
+          this.filtersUrl.append(filterName, filterValue);
         }
-      } else {
-        this.filtersUrl.append(filterName, filterValue);
+        break;
       }
-    } else if (filterType === 'checkbox') {
-      if (this.filtersUrl.has(filterName)) {
-        if (isFilterChecked) {
-          this.filtersUrl.set(
-            filterName,
-            `${this.filtersUrl.get(filterName)} ${filterValue}`,
-          );
-        } else if (filterParams.length > 1) {
-          this.filtersUrl.delete(filterName);
-          filterParams.splice(filterParams.indexOf(filterValue), 1);
-          this.filtersUrl.set(filterName, filterParams.join(' '));
+      case 'checkbox': {
+        if (this.filtersUrl.has(filterName)) {
+          if (isFilterChecked) {
+            this.filtersUrl.set(
+              filterName,
+              `${this.filtersUrl.get(filterName)} ${filterValue}`,
+            );
+          } else if (filterParams.length > 1) {
+            this.filtersUrl.delete(filterName);
+            filterParams.splice(filterParams.indexOf(filterValue), 1);
+            this.filtersUrl.set(filterName, filterParams.join(' '));
+          } else {
+            this.filtersUrl.delete(filterName);
+          }
         } else {
-          this.filtersUrl.delete(filterName);
+          this.filtersUrl.append(filterName, filterValue);
         }
-      } else {
-        this.filtersUrl.append(filterName, filterValue);
+        break;
+      }
+      default: {
+        console.warn(`Type '${filterType}' is not yet supported.`);
+        break;
       }
     }
   }
