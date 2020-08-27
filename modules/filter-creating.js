@@ -23,7 +23,7 @@ class Filter {
     if (tagName === 'select') {
       inputType = input.multiple ? 'select-multi' : 'select-single';
     } else if (tagName === 'input') {
-      inputType = input.type === 'radio' ? 'radio' : 'checkbox';
+      inputType = input.type;
     }
 
     return inputType;
