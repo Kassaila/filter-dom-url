@@ -53,7 +53,7 @@ class Filter {
 
       switch (filterType) {
         case 'select-single': {
-          this.$form.querySelector(`[${this.filterAttr}="${type}"]`).value = objectFilters[type][0];
+          this.$form.querySelector(`[${this.filterAttr}="${type}"]`).value = [...objectFilters[type]];
           break;
         }
         case 'select-multiple': {
@@ -80,6 +80,10 @@ class Filter {
               `[${this.filterAttr}="${type}"][value="${val}"]`,
             ).checked = true;
           });
+          break;
+        }
+        case 'color': {
+          this.$form.querySelector(`[${this.filterAttr}="${type}"]`).value = [...objectFilters[type]];
           break;
         }
         default: {
@@ -141,6 +145,10 @@ class Filter {
         } else {
           this.filtersUrl.append(filterName, filterValue);
         }
+        break;
+      }
+      case 'color': {
+        this.filtersUrl.set(filterName, filterValue);
         break;
       }
       default: {
