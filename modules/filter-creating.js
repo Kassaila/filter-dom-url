@@ -5,27 +5,27 @@ class Filter {
 
     this.$form = document.querySelector(`[${this.formAttr}]`);
     this.url = new URL(window.location.href);
-    this.filtersUrl = new URLSearchParams(
+    this.urlFilters = new URLSearchParams(
       decodeURIComponent(this.url.searchParams),
     );
   }
 
   // Static methods
-  static _checkInputType(input) {
-    const tagName = input.tagName.toLowerCase();
-    let inputType = null;
+  static _checkFilterType($filter) {
+    const tagName = $filter.tagName.toLowerCase();
+    let filterType = null;
 
     if (tagName === 'select') {
-      inputType = input.multiple ? 'select-multiple' : 'select-single';
+      filterType = $filter.multiple ? 'select-multiple' : 'select-single';
     } else if (tagName === 'input') {
-      inputType = input.type;
+      filterType = $filter.type;
     }
 
-    return inputType;
+    return filterType;
   }
 
-  static _parseFiltersFromUrl(paramsUrl) {
-    const params = [...paramsUrl.entries()];
+  static _parseFiltersFromUrl(urlParams) {
+    const params = [...urlParams.entries()];
     const objectFilters = {};
 
     if (params.length === 0) return objectFilters;
@@ -40,17 +40,17 @@ class Filter {
   // Private methods
   _updateUrl() {
     this.url = new URL(window.location.href);
-    this.filtersUrl = new URLSearchParams(this.url.searchParams);
+    this.urlFilters = new URLSearchParams(this.url.searchParams);
   }
 
-  _updateInputsFromUrl(paramsUrl) {
-    const objectFilters = Filter._parseFiltersFromUrl(paramsUrl);
+  _updateFiltersFromUrl(urlParams) {
+    const objectFilters = Filter._parseFiltersFromUrl(urlParams);
 
     if (Object.keys(objectFilters).length === 0) return;
 
     Object.keys(objectFilters).forEach((type) => {
-      const filter = this.$form.querySelector(`[${this.filterAttr}="${type}"]`);
-      const filterType = Filter._checkInputType(filter);
+      const $filter = this.$form.querySelector(`[${this.filterAttr}="${type}"]`);
+      const filterType = Filter._checkFilterType($filter);
 
       switch (filterType) {
         case 'select-single':
@@ -97,13 +97,10 @@ class Filter {
     });
   }
 
-  _updateUrlFromInputs(e) {
-    const { target } = e;
-    const filterName = target.getAttribute(`${this.filterAttr}`);
-    const filterValue = target.value;
-    const filterType = Filter._checkInputType(target);
-    const isFilterChecked = target.checked;
-    const filterParams = `${this.filtersUrl.get(filterName)}`.split(' ');
+  _updateUrlFromFilters(e) {
+    const $filter = e.target;
+    const filterName = $filter.getAttribute(`${this.filterAttr}`);
+    const filterType = Filter._checkFilterType($filter);
 
     switch (filterType) {
       case 'select-single':
@@ -114,37 +111,39 @@ class Filter {
       case 'month':
       case 'week':
       case 'time': {
-        if (filterValue !== '') {
-          this.filtersUrl.set(filterName, filterValue);
+        if ($filter.value !== '') {
+          this.urlFilters.set(filterName, $filter.value);
         } else {
-          this.filtersUrl.delete(filterName);
+          this.urlFilters.delete(filterName);
         }
         break;
       }
       case 'select-multiple': {
-        const filterValues = [...target.options]
+        const filterValues = [...$filter.options]
           .filter((option) => option.selected)
           .map((option) => option.value);
 
-        this.filtersUrl.set(filterName, filterValues.join(' '));
+        this.urlFilters.set(filterName, filterValues.join(' '));
         break;
       }
       case 'checkbox': {
-        if (this.filtersUrl.has(filterName)) {
-          if (isFilterChecked) {
-            this.filtersUrl.set(
+        const filterParams = `${this.urlFilters.get(filterName)}`.split(' ');
+
+        if (this.urlFilters.has(filterName)) {
+          if ($filter.checked) {
+            this.urlFilters.set(
               filterName,
-              `${this.filtersUrl.get(filterName)} ${filterValue}`,
+              `${this.urlFilters.get(filterName)} ${$filter.value}`,
             );
           } else if (filterParams.length > 1) {
-            this.filtersUrl.delete(filterName);
-            filterParams.splice(filterParams.indexOf(filterValue), 1);
-            this.filtersUrl.set(filterName, filterParams.join(' '));
+            this.urlFilters.delete(filterName);
+            filterParams.splice(filterParams.indexOf($filter.value), 1);
+            this.urlFilters.set(filterName, filterParams.join(' '));
           } else {
-            this.filtersUrl.delete(filterName);
+            this.urlFilters.delete(filterName);
           }
         } else {
-          this.filtersUrl.append(filterName, filterValue);
+          this.urlFilters.append(filterName, $filter.value);
         }
         break;
       }
@@ -155,66 +154,66 @@ class Filter {
     }
   }
 
-  _setFiltersToUrl(newUrl, setFiltersUrl) {
-    const filterUrl = new URL(newUrl);
+  _setFiltersToUrl(newUrl, setUrlFilters) {
+    const updatableUrl = new URL(newUrl);
 
-    filterUrl.search = setFiltersUrl;
-    window.history.pushState(null, null, filterUrl);
+    updatableUrl.search = setUrlFilters;
+    window.history.pushState(null, null, updatableUrl);
 
     this._updateUrl();
   }
 
   _resetUrl() {
-    const emptyFiltersUrl = new URLSearchParams('');
+    const emptyUrlFilters = new URLSearchParams('');
 
-    this._setFiltersToUrl(this.url, emptyFiltersUrl);
+    this._setFiltersToUrl(this.url, emptyUrlFilters);
   }
 
-  _resetInputs() {
+  _resetFilters() {
     this.$form.reset();
   }
 
   _eventListeners() {
-    this.$form.querySelectorAll(`[${this.filterAttr}]`).forEach(($el) => {
-      $el.addEventListener('change', (e) => {
-        this._updateUrlFromInputs(e);
+    this.$form.querySelectorAll(`[${this.filterAttr}]`).forEach(($filter) => {
+      $filter.addEventListener('change', (e) => {
+        this._updateUrlFromFilters(e);
       });
     });
 
     window.addEventListener('popstate', () => {
       this._updateUrl();
 
-      this._resetInputs();
+      this._resetFilters();
 
-      this._updateInputsFromUrl(this.filtersUrl);
+      this._updateFiltersFromUrl(this.urlFilters);
     });
   }
 
   // Public methods
   initFilters() {
-    this._updateInputsFromUrl(this.filtersUrl);
+    this._updateFiltersFromUrl(this.urlFilters);
 
     this._eventListeners();
   }
 
-  updateInputs() {
-    this._updateInputsFromUrl(this.filtersUrl);
+  updateFilters() {
+    this._updateFiltersFromUrl(this.urlFilters);
   }
 
   resetUrl() {
     this._resetUrl();
   }
 
-  resetInputs() {
-    this._resetInputs();
+  resetFilters() {
+    this._resetFilters();
   }
 
-  setFilters(newUrl) {
-    this._setFiltersToUrl(newUrl, this.filtersUrl);
+  setFiltersToUrl(newUrl) {
+    this._setFiltersToUrl(newUrl, this.urlFilters);
   }
 
-  getFilters() {
-    return Filter._parseFiltersFromUrl(this.filtersUrl);
+  getFiltersFromUrl() {
+    return Filter._parseFiltersFromUrl(this.urlFilters);
   }
 }
 
