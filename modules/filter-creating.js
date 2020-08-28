@@ -121,11 +121,7 @@ class Filter {
           .filter((option) => option.selected)
           .map((option) => option.value);
 
-        if (this.filtersUrl.has(filterName)) {
-          this.filtersUrl.delete(filterName);
-        }
-
-        this.filtersUrl.append(filterName, filterValues.join(' '));
+        this.filtersUrl.set(filterName, filterValues.join(' '));
         break;
       }
       case 'checkbox': {
