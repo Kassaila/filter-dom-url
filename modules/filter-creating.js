@@ -10,13 +10,8 @@ class Filter {
     );
   }
 
-  // Private methods
-  _updateUrl() {
-    this.url = new URL(window.location.href);
-    this.filtersUrl = new URLSearchParams(this.url.searchParams);
-  }
-
-  _checkInputType(input) {
+  // Static methods
+  static _checkInputType(input) {
     const tagName = input.tagName.toLowerCase();
     let inputType = null;
 
@@ -29,7 +24,7 @@ class Filter {
     return inputType;
   }
 
-  _parseFiltersFromUrl(paramsUrl) {
+  static _parseFiltersFromUrl(paramsUrl) {
     const params = [...paramsUrl.entries()];
     const objectFilters = {};
 
@@ -42,17 +37,29 @@ class Filter {
     return objectFilters;
   }
 
+  // Private methods
+  _updateUrl() {
+    this.url = new URL(window.location.href);
+    this.filtersUrl = new URLSearchParams(this.url.searchParams);
+  }
+
   _updateInputsFromUrl(paramsUrl) {
-    const objectFilters = this._parseFiltersFromUrl(paramsUrl);
+    const objectFilters = Filter._parseFiltersFromUrl(paramsUrl);
 
     if (Object.keys(objectFilters).length === 0) return;
 
     Object.keys(objectFilters).forEach((type) => {
       const filter = this.$form.querySelector(`[${this.filterAttr}="${type}"]`);
-      const filterType = this._checkInputType(filter);
+      const filterType = Filter._checkInputType(filter);
 
       switch (filterType) {
-        case 'select-single': {
+        case 'select-single':
+        case 'color':
+        case 'range':
+        case 'date':
+        case 'month':
+        case 'week':
+        case 'time': {
           this.$form.querySelector(`[${this.filterAttr}="${type}"]`).value = [...objectFilters[type]];
           break;
         }
@@ -70,20 +77,16 @@ class Filter {
         }
         case 'radio': {
           this.$form.querySelector(
-            `[${this.filterAttr}="${type}"][value="${objectFilters[type][0]}"]`,
+            `[${this.filterAttr}="${type}"][value="${[...objectFilters[type]]}"]`,
           ).checked = true;
           break;
         }
         case 'checkbox': {
-          objectFilters[type].forEach((val) => {
+          objectFilters[type].forEach((value) => {
             this.$form.querySelector(
-              `[${this.filterAttr}="${type}"][value="${val}"]`,
+              `[${this.filterAttr}="${type}"][value="${value}"]`,
             ).checked = true;
           });
-          break;
-        }
-        case 'color': {
-          this.$form.querySelector(`[${this.filterAttr}="${type}"]`).value = [...objectFilters[type]];
           break;
         }
         default: {
@@ -98,21 +101,23 @@ class Filter {
     const { target } = e;
     const filterName = target.getAttribute(`${this.filterAttr}`);
     const filterValue = target.value;
-    const filterType = this._checkInputType(target);
+    const filterType = Filter._checkInputType(target);
     const isFilterChecked = target.checked;
     const filterParams = `${this.filtersUrl.get(filterName)}`.split(' ');
 
     switch (filterType) {
       case 'select-single':
-      case 'radio': {
-        if (this.filtersUrl.has(filterName)) {
-          if (filterValue !== '') {
-            this.filtersUrl.set(filterName, filterValue);
-          } else {
-            this.filtersUrl.delete(filterName);
-          }
+      case 'radio':
+      case 'color':
+      case 'range':
+      case 'date':
+      case 'month':
+      case 'week':
+      case 'time': {
+        if (filterValue !== '') {
+          this.filtersUrl.set(filterName, filterValue);
         } else {
-          this.filtersUrl.append(filterName, filterValue);
+          this.filtersUrl.delete(filterName);
         }
         break;
       }
@@ -141,10 +146,6 @@ class Filter {
         } else {
           this.filtersUrl.append(filterName, filterValue);
         }
-        break;
-      }
-      case 'color': {
-        this.filtersUrl.set(filterName, filterValue);
         break;
       }
       default: {
@@ -213,7 +214,7 @@ class Filter {
   }
 
   getFilters() {
-    return this._parseFiltersFromUrl(this.filtersUrl);
+    return Filter._parseFiltersFromUrl(this.filtersUrl);
   }
 }
 
