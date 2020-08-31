@@ -13,8 +13,8 @@ module.exports = {
     build: 'dist',
   },
   file: {
-    mainJs: 'filter-inputs-url.js',
-    mainJsMin: 'filter-inputs-url.min.js',
+    mainJs: 'filter-inputs-url',
+    mainJsMin: 'filter-inputs-url.min',
   },
   error: {
     sound: true,
