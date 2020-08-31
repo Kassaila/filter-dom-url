@@ -5,27 +5,26 @@
 
 const webpack = require('webpack');
 const path = require('path');
-const TerserPlugin = require('terser-webpack-plugin');
 
 const notifier = require('../helpers/notifier');
 const global = require('../gulp-config.js');
 
 module.exports = function () {
   const production = global.isProduction();
-  const mainFileName = production ? global.file.mainJsMin : global.file.mainJs;
 
   return (done) => {
     try {
       const config = {
         mode: 'none',
-        entry: `./${global.folder.src}/index.js`,
+        entry: {
+          [global.file.mainJs]: `./${global.folder.src}/index.js`,
+        },
         output: {
           path: path.resolve(global.folder.build, ''),
-          filename: mainFileName,
+          filename: `[name].js`,
         },
         optimization: {
-          minimize: production,
-          minimizer: [new TerserPlugin()],
+          minimize: false,
         },
         module: {
           rules: [

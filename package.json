@@ -32,7 +32,6 @@
     "eslint-plugin-import": "^2.22.0",
     "gulp": "^4.0.2",
     "node-notifier": "^8.0.0",
-    "terser-webpack-plugin": "^4.1.0",
     "webpack": "^4.44.1"
   },
   "engines": {
