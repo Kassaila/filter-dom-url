@@ -1,0 +1,97 @@
+<style>
+  section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+  }
+</style>
+<main>
+  <h1>Examples for filter-inputs-url</h1>
+  <form data-filter-form>
+    <section>
+      <div>
+        @@for (var i = 0; i < 5; i++) { <div>
+          <label for="id-1-`+[i]+`">
+            <input id="id-1-`+[i]+`" value="id-1-`+[i]+`" data-filter="checkbox" type="checkbox">
+            <span>checkbox `+[i]+`</span>
+          </label>
+      </div>
+      }
+      </div>
+      <div>
+        @@for (var i = 0; i < 5; i++) { <div>
+          <label for="id-2-`+[i]+`">
+            <input id="id-2-`+[i]+`" value="id-2-`+[i]+`" name="radio" data-filter="radio" type="radio">
+            <span>radio `+[i]+`</span>
+          </label>
+      </div>
+      }
+      </div>
+      <div>
+        @@for (var i = 0; i < 3; i++) { <div>
+          <label for="id-3-`+[i]+`">
+            <p>select `+[i]+`</p>
+            <select id="id-3-`+[i]+`" data-filter="select-`+[i]+`">
+              <option value="option-`+[i]+`-0">option-`+[i]+`-0</option>
+              <option value="option-`+[i]+`-1">option-`+[i]+`-1</option>
+              <option value="option-`+[i]+`-2">option-`+[i]+`-2</option>
+            </select>
+          </label>
+      </div>
+      }
+      </div>
+      <div>
+        <label for="id-5">
+          <p>select multiple</p>
+          <select id="id-5" data-filter="select-multiple" multiple>
+            <option value="option-0">option-0</option>
+            <option value="option-1">option-1</option>
+            <option value="option-2">option-2</option>
+            <option value="option-3">option-3</option>
+            <option value="option-4">option-4</option>
+          </select>
+        </label>
+      </div>
+      <div>
+        <label for="id-6">
+          <p>input color</p>
+          <input id="id-6" data-filter="color" type="color">
+        </label>
+      </div>
+      <div>
+        <label for="id-7">
+          <p>input range</p>
+          <input id="id-7" data-filter="range" type="range" min="0" max="100" step="10">
+        </label>
+      </div>
+      <div>
+        <label for="id-8">
+          <p>input date</p>
+          <input id="id-8" data-filter="date" type="date">
+        </label>
+      </div>
+      <div>
+        <label for="id-9">
+          <p>input month</p>
+          <input id="id-9" data-filter="month" type="month">
+        </label>
+      </div>
+      <div>
+        <label for="id-10">
+          <p>input week</p>
+          <input id="id-10" data-filter="week" type="week">
+        </label>
+      </div>
+      <div>
+        <label for="id-11">
+          <p>input time</p>
+          <input id="id-11" data-filter="time" type="time">
+        </label>
+      </div>
+    </section>
+    <div>
+      <button data-filter-reset type="reset">Reset</button>
+      <button data-filter-apply type="button">Apply</button>
+    </div>
+  </form>
+</main>

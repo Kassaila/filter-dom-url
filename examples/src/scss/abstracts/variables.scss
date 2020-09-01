@@ -1,0 +1,97 @@
+@import 'functions';
+
+// Global variables
+
+// 'rem' base value
+$rem: 10px;
+
+// Breakpoints for include media mixin
+$breakpoints: (
+  'xsm': 480px,
+  'sm': 768px,
+  'md': 980px,
+  'lg': 1200px,
+);
+
+// Keywords for include media mixin
+$media-expressions: (
+  'screen': 'screen',
+  'print': 'print',
+  'handheld': 'handheld',
+  'landscape': '(orientation: landscape)',
+  'portrait': '(orientation: portrait)',
+  'retina2x': (
+    '(-webkit-min-device-pixel-ratio: 1.5)',
+    '(min-resolution: 144dpi)',
+  ),
+  'retina3x': (
+    '(-webkit-min-device-pixel-ratio: 2.5)',
+    '(min-resolution: 240dpi)',
+  ),
+  'hover': (
+    '(hover: hover)' '(pointer: fine)',
+    '(-ms-high-contrast: none)',
+    '(-ms-high-contrast: active)',
+  ),
+  'theme-light': 'prefers-color-scheme: light',
+  'theme-dark': 'prefers-color-scheme: dark',
+  'ie': (
+    '(-ms-high-contrast: none)',
+    '(-ms-high-contrast: active)',
+  ),
+);
+
+:root {
+  // Breakpoints
+  --xsm: #{map-get($breakpoints, 'xsm')};
+  --sm: #{map-get($breakpoints, 'sm')};
+  --md: #{map-get($breakpoints, 'md')};
+  --lg: #{map-get($breakpoints, 'lg')};
+
+  // Colors
+  --color-white: #fff;
+  --color-black: #000;
+  --color-grey: #999;
+  --color-blue: #39f;
+
+  // Fonts
+  --font-sans-serif: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+  --font-serif: 'Times New Roman', Times, Baskerville, Georgia, serif;
+
+  // Body base
+  --base-background-color: var(--color-white);
+  --base-font-family: var(--font-sans-serif);
+  --base-font-size: 1.6rem;
+  --base-line-height: 1.2;
+  --base-text-color: var(--color-black);
+  --base-min-width: 320px;
+
+  // Links base
+  --base-link-color: var(--color-blue);
+
+  // Buttons base
+  --btn-color: var(--color-white);
+  --btn-background: var(--color-blue);
+  --btn-padding: 0.4em 0.7em;
+  --btn-font-size: 1.6rem;
+  --btn-font-family: var(--font-sans-serif);
+
+  // Forms base
+  --form-font-family: var(--font-sans-serif);
+  --form-element-padding: var(--btn-padding);
+  --form-element-border-color: var(--color-grey);
+  --form-element-focus-border-color: var(--color-black);
+  --placeholder-color: var(--color-grey);
+
+  // Headings base
+  --headings-font-family: var(--font-sans-serif);
+  --headings-color: var(--base-text-color);
+
+  // Base font styles for headings
+  --headings-sizes-h1: 3rem;
+  --headings-sizes-h2: 2.7rem;
+  --headings-sizes-h3: 2.4rem;
+  --headings-sizes-h4: 2.1rem;
+  --headings-sizes-h5: 1.7rem;
+  --headings-sizes-h6: 1.5rem;
+}
