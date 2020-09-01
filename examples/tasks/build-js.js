@@ -33,7 +33,7 @@ module.exports = function () {
             minSize: 0,
             cacheGroups: {
               vendor: {
-                test: /[\\/](node_modules|vendor_entries)[\\/]/,
+                test: /[\\/](node_modules|vendor_entries|dist)[\\/]/,
                 filename: vendorFileName,
               },
             },

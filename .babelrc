@@ -3,7 +3,7 @@
     [
       "@babel/env",
       {
-        "modules": false,
+        "modules": "auto",
         "forceAllTransforms": true
       }
     ]
