@@ -56,14 +56,6 @@ module.exports = function () {
       };
 
       webpack(config, (error, stats) => {
-        if (stats) {
-          return done();
-        }
-
-        if (error) {
-          throw new Error(error);
-        }
-
         if (production) {
           console.log(
             stats.toString({
@@ -73,6 +65,14 @@ module.exports = function () {
               colors: true,
             })
           );
+        }
+
+        if (stats) {
+          return done();
+        }
+
+        if (error) {
+          throw new Error(error);
         }
       });
     } catch (error) {
