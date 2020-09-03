@@ -75,7 +75,6 @@ module.exports = {
   getFilesToCopyProd() {
     return [
       `./${this.folder.dev}/**`,
-      '.htaccess',
     ];
   },
   isProduction() {
