@@ -20,7 +20,7 @@ module.exports = {
     tasks: 'tasks',
     src: 'src',
     dev: 'assets',
-    build: 'production',
+    build: 'docs',
   },
   file: {
     mainHtml: 'index.html',
