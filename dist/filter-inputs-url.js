@@ -36,8 +36,26 @@ var Filter = /*#__PURE__*/function () {
 
 
   _createClass(Filter, [{
-    key: "_updateUrl",
+    key: "_parseFiltersFromUrl",
     // Private methods
+    value: function _parseFiltersFromUrl(urlParams) {
+      var _this = this;
+
+      var params = _toConsumableArray(urlParams.entries());
+
+      var objectFilters = {};
+      if (params.length === 0) return objectFilters;
+      params.forEach(function (param) {
+        var type = param[0];
+        var VALUES = param[1];
+        var isFilterExist = document.querySelector("[".concat(_this.filterAttr, "=\"").concat(type, "\"]"));
+        if (!isFilterExist) return;
+        objectFilters[type] = VALUES.split(' ');
+      });
+      return objectFilters;
+    }
+  }, {
+    key: "_updateUrl",
     value: function _updateUrl() {
       this.url = new URL(window.location.href);
       this.urlFilters = new URLSearchParams(this.url.searchParams);
@@ -45,13 +63,15 @@ var Filter = /*#__PURE__*/function () {
   }, {
     key: "_updateFiltersFromUrl",
     value: function _updateFiltersFromUrl(urlParams) {
-      var _this = this;
+      var _this2 = this;
 
-      var objectFilters = Filter._parseFiltersFromUrl(urlParams);
+      var objectFilters = this._parseFiltersFromUrl(urlParams);
 
       if (Object.keys(objectFilters).length === 0) return;
       Object.keys(objectFilters).forEach(function (type) {
-        var $filter = _this.$form.querySelector("[".concat(_this.filterAttr, "=\"").concat(type, "\"]"));
+        var $filter = _this2.$form.querySelector("[".concat(_this2.filterAttr, "=\"").concat(type, "\"]"));
+
+        if (!$filter) return;
 
         var filterType = Filter._checkFilterType($filter);
 
@@ -64,13 +84,13 @@ var Filter = /*#__PURE__*/function () {
           case 'week':
           case 'time':
             {
-              _this.$form.querySelector("[".concat(_this.filterAttr, "=\"").concat(type, "\"]")).value = _toConsumableArray(objectFilters[type]);
+              _this2.$form.querySelector("[".concat(_this2.filterAttr, "=\"").concat(type, "\"]")).value = _toConsumableArray(objectFilters[type]);
               break;
             }
 
           case 'select-multiple':
             {
-              var $selectOptions = _toConsumableArray(_this.$form.querySelector("[".concat(_this.filterAttr, "=\"").concat(type, "\"]")).options);
+              var $selectOptions = _toConsumableArray(_this2.$form.querySelector("[".concat(_this2.filterAttr, "=\"").concat(type, "\"]")).options);
 
               $selectOptions.forEach(function ($selectOption) {
                 var $option = $selectOption;
@@ -84,14 +104,14 @@ var Filter = /*#__PURE__*/function () {
 
           case 'radio':
             {
-              _this.$form.querySelector("[".concat(_this.filterAttr, "=\"").concat(type, "\"][value=\"").concat(_toConsumableArray(objectFilters[type]), "\"]")).checked = true;
+              _this2.$form.querySelector("[".concat(_this2.filterAttr, "=\"").concat(type, "\"][value=\"").concat(_toConsumableArray(objectFilters[type]), "\"]")).checked = true;
               break;
             }
 
           case 'checkbox':
             {
               objectFilters[type].forEach(function (value) {
-                _this.$form.querySelector("[".concat(_this.filterAttr, "=\"").concat(type, "\"][value=\"").concat(value, "\"]")).checked = true;
+                _this2.$form.querySelector("[".concat(_this2.filterAttr, "=\"").concat(type, "\"][value=\"").concat(value, "\"]")).checked = true;
               });
               break;
             }
@@ -183,9 +203,13 @@ var Filter = /*#__PURE__*/function () {
   }, {
     key: "_resetUrl",
     value: function _resetUrl() {
-      var emptyUrlFilters = new URLSearchParams('');
+      var _this3 = this;
 
-      this._setFiltersToUrl(this.url, emptyUrlFilters);
+      Object.keys(this._parseFiltersFromUrl(this.urlFilters)).forEach(function (filter) {
+        _this3.urlFilters["delete"](filter);
+      });
+
+      this._setFiltersToUrl(this.url, this.urlFilters);
     }
   }, {
     key: "_resetFilters",
@@ -195,19 +219,19 @@ var Filter = /*#__PURE__*/function () {
   }, {
     key: "_eventListeners",
     value: function _eventListeners() {
-      var _this2 = this;
+      var _this4 = this;
 
       this.$form.querySelectorAll("[".concat(this.filterAttr, "]")).forEach(function ($filter) {
         $filter.addEventListener('change', function (e) {
-          _this2._updateUrlFromFilters(e);
+          _this4._updateUrlFromFilters(e);
         });
       });
       window.addEventListener('popstate', function () {
-        _this2._updateUrl();
+        _this4._updateUrl();
 
-        _this2._resetFilters();
+        _this4._resetFilters();
 
-        _this2._updateFiltersFromUrl(_this2.urlFilters);
+        _this4._updateFiltersFromUrl(_this4.urlFilters);
       });
     } // Public methods
 
@@ -241,7 +265,7 @@ var Filter = /*#__PURE__*/function () {
   }, {
     key: "getFiltersFromUrl",
     value: function getFiltersFromUrl() {
-      return Filter._parseFiltersFromUrl(this.urlFilters);
+      return this._parseFiltersFromUrl(this.urlFilters);
     }
   }], [{
     key: "_checkFilterType",
@@ -256,18 +280,6 @@ var Filter = /*#__PURE__*/function () {
       }
 
       return filterType;
-    }
-  }, {
-    key: "_parseFiltersFromUrl",
-    value: function _parseFiltersFromUrl(urlParams) {
-      var params = _toConsumableArray(urlParams.entries());
-
-      var objectFilters = {};
-      if (params.length === 0) return objectFilters;
-      params.forEach(function (param) {
-        objectFilters[param[0]] = param[1].split(' ');
-      });
-      return objectFilters;
     }
   }]);
 

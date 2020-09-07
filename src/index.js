@@ -24,32 +24,41 @@ class Filter {
     return filterType;
   }
 
-  static _parseFiltersFromUrl(urlParams) {
+  // Private methods
+  _parseFiltersFromUrl(urlParams) {
     const params = [...urlParams.entries()];
     const objectFilters = {};
 
     if (params.length === 0) return objectFilters;
 
     params.forEach((param) => {
-      objectFilters[param[0]] = param[1].split(' ');
+      const type = param[0];
+      const VALUES = param[1];
+      const isFilterExist = document.querySelector(`[${this.filterAttr}="${type}"]`);
+
+      if (!isFilterExist) return;
+
+      objectFilters[type] = VALUES.split(' ');
     });
 
     return objectFilters;
   }
 
-  // Private methods
   _updateUrl() {
     this.url = new URL(window.location.href);
     this.urlFilters = new URLSearchParams(this.url.searchParams);
   }
 
   _updateFiltersFromUrl(urlParams) {
-    const objectFilters = Filter._parseFiltersFromUrl(urlParams);
+    const objectFilters = this._parseFiltersFromUrl(urlParams);
 
     if (Object.keys(objectFilters).length === 0) return;
 
     Object.keys(objectFilters).forEach((type) => {
       const $filter = this.$form.querySelector(`[${this.filterAttr}="${type}"]`);
+
+      if (!$filter) return;
+
       const filterType = Filter._checkFilterType($filter);
 
       switch (filterType) {
@@ -164,9 +173,11 @@ class Filter {
   }
 
   _resetUrl() {
-    const emptyUrlFilters = new URLSearchParams('');
+    Object.keys(this._parseFiltersFromUrl(this.urlFilters)).forEach((filter) => {
+      this.urlFilters.delete(filter);
+    });
 
-    this._setFiltersToUrl(this.url, emptyUrlFilters);
+    this._setFiltersToUrl(this.url, this.urlFilters);
   }
 
   _resetFilters() {
@@ -213,7 +224,7 @@ class Filter {
   }
 
   getFiltersFromUrl() {
-    return Filter._parseFiltersFromUrl(this.urlFilters);
+    return this._parseFiltersFromUrl(this.urlFilters);
   }
 }
 
