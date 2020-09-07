@@ -12,22 +12,15 @@ window.addEventListener('load', () => {
     filterAttr: 'data-filter',
   });
 
-  function _renderFromRequest() {
+  function _sendRequest() {
     const baseUrl = new URL(window.location.href);
 
     filterExample.setFiltersToUrl(baseUrl);
 
-    const object = filterExample.getFiltersFromUrl();
-
-    const params = Object.entries(object);
-    const objectRequest = {};
-
-    params.forEach((el) => {
-      objectRequest[el[0]] = el[1].join('+');
-    });
+    const request = filterExample.getFiltersFromUrl();
 
     // log request
-    console.log(objectRequest);
+    console.log(request);
   }
 
   function _updateFormButtons() {
@@ -48,7 +41,7 @@ window.addEventListener('load', () => {
   function _eventListeners() {
     // Button apply
     $btnApply.addEventListener('click', () => {
-      _renderFromRequest();
+      _sendRequest();
       _updateFormButtons();
     });
 
@@ -57,7 +50,7 @@ window.addEventListener('load', () => {
       filterExample.resetFilters();
       filterExample.resetUrl();
 
-      _renderFromRequest();
+      _sendRequest();
       _updateFormButtons();
     });
 
