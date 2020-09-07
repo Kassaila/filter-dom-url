@@ -2,13 +2,13 @@ import Filter from '../../../dist/filter-inputs-url';
 
 // When DOM is ready
 window.addEventListener('load', () => {
-  const form = document.querySelector('[data-filter-form]');
-  const filters = form.querySelectorAll('[data-filter]');
-  const btnApply = form.querySelector('[data-filter-apply]');
-  const btnReset = form.querySelector('[data-filter-reset]');
+  const $form = document.querySelector('[data-filter-form="example"]');
+  const $filters = $form.querySelectorAll('[data-filter]');
+  const $btnApply = $form.querySelector('[data-filter-apply]');
+  const $btnReset = $form.querySelector('[data-filter-reset]');
 
   const filtersCreating = new Filter({
-    formAttr: 'data-filter-form',
+    formAttr: 'data-filter-form="example"',
     filterAttr: 'data-filter',
   });
 
@@ -35,25 +35,25 @@ window.addEventListener('load', () => {
       || window.location.search.length > 0;
 
     if (!isFiltersSelected) {
-      btnApply.setAttribute('disabled', 'disabled');
+      $btnApply.setAttribute('disabled', 'disabled');
 
-      btnReset.setAttribute('disabled', 'disabled');
+      $btnReset.setAttribute('disabled', 'disabled');
     } else {
-      btnApply.removeAttribute('disabled');
+      $btnApply.removeAttribute('disabled');
 
-      btnReset.removeAttribute('disabled');
+      $btnReset.removeAttribute('disabled');
     }
   }
 
   function _eventListeners() {
     // Button apply
-    btnApply.addEventListener('click', () => {
+    $btnApply.addEventListener('click', () => {
       _renderFromRequest();
       _updateFormButtons();
     });
 
     // Button reset
-    btnReset.addEventListener('click', () => {
+    $btnReset.addEventListener('click', () => {
       filtersCreating.resetFilters();
       filtersCreating.resetUrl();
 
@@ -61,8 +61,8 @@ window.addEventListener('load', () => {
       _updateFormButtons();
     });
 
-    filters.forEach((el) => {
-      el.addEventListener('change', () => {
+    $filters.forEach(($filter) => {
+      $filter.addEventListener('change', () => {
         _updateFormButtons();
       });
     });
