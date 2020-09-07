@@ -7,7 +7,7 @@ window.addEventListener('load', () => {
   const $btnApply = $form.querySelector('[data-filter-apply]');
   const $btnReset = $form.querySelector('[data-filter-reset]');
 
-  const filtersCreating = new Filter({
+  const filterExample = new Filter({
     formAttr: 'data-filter-form="example"',
     filterAttr: 'data-filter',
   });
@@ -15,9 +15,9 @@ window.addEventListener('load', () => {
   function _renderFromRequest() {
     const baseUrl = new URL(window.location.href);
 
-    filtersCreating.setFiltersToUrl(baseUrl);
+    filterExample.setFiltersToUrl(baseUrl);
 
-    const object = filtersCreating.getFiltersFromUrl();
+    const object = filterExample.getFiltersFromUrl();
 
     const params = Object.entries(object);
     const objectRequest = {};
@@ -31,7 +31,7 @@ window.addEventListener('load', () => {
   }
 
   function _updateFormButtons() {
-    const isFiltersSelected = Object.entries(filtersCreating.getFiltersFromUrl()).length > 0
+    const isFiltersSelected = Object.entries(filterExample.getFiltersFromUrl()).length > 0
       || window.location.search.length > 0;
 
     if (!isFiltersSelected) {
@@ -54,8 +54,8 @@ window.addEventListener('load', () => {
 
     // Button reset
     $btnReset.addEventListener('click', () => {
-      filtersCreating.resetFilters();
-      filtersCreating.resetUrl();
+      filterExample.resetFilters();
+      filterExample.resetUrl();
 
       _renderFromRequest();
       _updateFormButtons();
@@ -69,7 +69,7 @@ window.addEventListener('load', () => {
   }
 
   function init() {
-    filtersCreating.initFilters();
+    filterExample.initFilters();
 
     _updateFormButtons();
 
