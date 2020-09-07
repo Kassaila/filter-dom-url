@@ -192,8 +192,8 @@ var Filter = /*#__PURE__*/function () {
       }
     }
   }, {
-    key: "_setFiltersToUrl",
-    value: function _setFiltersToUrl(newUrl, setUrlFilters) {
+    key: "_setFiltersToGlobalUrl",
+    value: function _setFiltersToGlobalUrl(newUrl, setUrlFilters) {
       var updatableUrl = new URL(newUrl);
       updatableUrl.search = setUrlFilters;
       window.history.pushState(null, null, updatableUrl);
@@ -201,15 +201,15 @@ var Filter = /*#__PURE__*/function () {
       this._updateUrl();
     }
   }, {
-    key: "_resetUrl",
-    value: function _resetUrl() {
+    key: "_resetGlobalUrl",
+    value: function _resetGlobalUrl() {
       var _this3 = this;
 
       Object.keys(this._parseFiltersFromUrl(this.urlFilters)).forEach(function (filter) {
         _this3.urlFilters["delete"](filter);
       });
 
-      this._setFiltersToUrl(this.url, this.urlFilters);
+      this._setFiltersToGlobalUrl(this.url, this.urlFilters);
     }
   }, {
     key: "_resetFilters",
@@ -250,7 +250,7 @@ var Filter = /*#__PURE__*/function () {
   }, {
     key: "resetUrl",
     value: function resetUrl() {
-      this._resetUrl();
+      this._resetGlobalUrl();
     }
   }, {
     key: "resetFilters",
@@ -260,7 +260,7 @@ var Filter = /*#__PURE__*/function () {
   }, {
     key: "setFiltersToUrl",
     value: function setFiltersToUrl(newUrl) {
-      this._setFiltersToUrl(newUrl, this.urlFilters);
+      this._setFiltersToGlobalUrl(newUrl, this.urlFilters);
     }
   }, {
     key: "getFiltersFromUrl",

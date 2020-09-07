@@ -163,7 +163,7 @@ class Filter {
     }
   }
 
-  _setFiltersToUrl(newUrl, setUrlFilters) {
+  _setFiltersToGlobalUrl(newUrl, setUrlFilters) {
     const updatableUrl = new URL(newUrl);
 
     updatableUrl.search = setUrlFilters;
@@ -172,12 +172,12 @@ class Filter {
     this._updateUrl();
   }
 
-  _resetUrl() {
+  _resetGlobalUrl() {
     Object.keys(this._parseFiltersFromUrl(this.urlFilters)).forEach((filter) => {
       this.urlFilters.delete(filter);
     });
 
-    this._setFiltersToUrl(this.url, this.urlFilters);
+    this._setFiltersToGlobalUrl(this.url, this.urlFilters);
   }
 
   _resetFilters() {
@@ -212,7 +212,7 @@ class Filter {
   }
 
   resetUrl() {
-    this._resetUrl();
+    this._resetGlobalUrl();
   }
 
   resetFilters() {
@@ -220,7 +220,7 @@ class Filter {
   }
 
   setFiltersToUrl(newUrl) {
-    this._setFiltersToUrl(newUrl, this.urlFilters);
+    this._setFiltersToGlobalUrl(newUrl, this.urlFilters);
   }
 
   getFiltersFromUrl() {
