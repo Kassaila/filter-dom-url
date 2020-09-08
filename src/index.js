@@ -39,20 +39,20 @@ class Filter {
   /**
    * Parse URLSearchParam
    * @private
-   * @param {object} urlParams - URLSearchParam prototype
+   * @param {object} urlFilters - URLSearchParam prototype
    * @returns {object} - {
    *  filter-type: ['filter-value'],
    * }
    */
-  _parseFiltersFromUrl(urlParams) {
-    const params = [...urlParams.entries()];
+  _parseFiltersFromUrl(urlFilters) {
+    const filters = [...urlFilters.entries()];
     const objectFilters = {};
 
-    if (params.length === 0) return objectFilters;
+    if (filters.length === 0) return objectFilters;
 
-    params.forEach((param) => {
-      const type = param[0];
-      const VALUES = param[1];
+    filters.forEach((filter) => {
+      const type = filter[0];
+      const VALUES = filter[1];
       const isFilterExist = document.querySelector(`[${this.filterAttr}="${type}"]`);
 
       if (!isFilterExist) return;
@@ -73,12 +73,12 @@ class Filter {
   }
 
   /**
-   * Update DOM elements filters from url
+   * Update DOM elements from url
    * @private
-   * @param {object} urlParams - URLSearchParam prototype
+   * @param {object} urlFilters - URLSearchParam prototype
    */
-  _updateFiltersFromUrl(urlParams) {
-    const objectFilters = this._parseFiltersFromUrl(urlParams);
+  _updateFiltersFromUrl(urlFilters) {
+    const objectFilters = this._parseFiltersFromUrl(urlFilters);
 
     if (Object.keys(objectFilters).length === 0) return;
 
@@ -135,7 +135,7 @@ class Filter {
   }
 
   /**
-   * Update url from DOM elements filters
+   * Update url from DOM elements
    * @private
    * @param {object} e - DOM element event
    */
@@ -197,7 +197,7 @@ class Filter {
   }
 
   /**
-   * Set window location URL & update history
+   * Set window.location URL & update history
    * @private
    * @param {object} newUrl - URL prototype
    * @param {object} setUrlFilters - URLSearchParams prototype
@@ -212,7 +212,7 @@ class Filter {
   }
 
   /**
-  * Reset url & window location URL
+  * Reset url & window.location URL
   * @private
   */
   _resetGlobalUrl() {
@@ -224,7 +224,7 @@ class Filter {
   }
 
   /**
-  * Reset filters DOM elements
+  * Reset DOM elements
   * @private
   */
   _resetFilters() {
@@ -255,7 +255,7 @@ class Filter {
   * Instance initialization
   * @public
   */
-  initFilters() {
+  init() {
     this._updateFiltersFromUrl(this.urlFilters);
 
     this._eventListeners();
@@ -265,7 +265,7 @@ class Filter {
   * Update DOM elements filters
   * @public
   */
-  updateFilters() {
+  updateDom() {
     this._updateFiltersFromUrl(this.urlFilters);
   }
 
@@ -281,7 +281,7 @@ class Filter {
   * Reset DOM elements filters
   * @public
   */
-  resetFilters() {
+  resetDom() {
     this._resetFilters();
   }
 
@@ -301,7 +301,7 @@ class Filter {
   *  filter-type: ['filter-value'],
   * }
   */
-  getFiltersFromUrl() {
+  getFilters() {
     return this._parseFiltersFromUrl(this.urlFilters);
   }
 }

@@ -1,6 +1,5 @@
 import Filter from '../../../dist/filter-inputs-url';
 
-// When DOM is ready
 window.addEventListener('load', () => {
   const $form = document.querySelector('[data-filter-form="example"]');
   const $filters = $form.querySelectorAll('[data-filter]');
@@ -17,14 +16,14 @@ window.addEventListener('load', () => {
 
     filterExample.setFiltersToUrl(baseUrl);
 
-    const request = filterExample.getFiltersFromUrl();
+    const request = filterExample.getFilters();
 
     // log request
     console.log(request);
   }
 
   function _updateFormButtons() {
-    const isFiltersSelected = Object.entries(filterExample.getFiltersFromUrl()).length > 0
+    const isFiltersSelected = Object.entries(filterExample.getFilters()).length > 0
       || window.location.search.length > 0;
 
     if (!isFiltersSelected) {
@@ -47,7 +46,7 @@ window.addEventListener('load', () => {
 
     // Button reset
     $btnReset.addEventListener('click', () => {
-      filterExample.resetFilters();
+      filterExample.resetDom();
       filterExample.resetUrl();
 
       _sendRequest();
@@ -61,13 +60,9 @@ window.addEventListener('load', () => {
     });
   }
 
-  function init() {
-    filterExample.initFilters();
+  filterExample.init();
 
-    _updateFormButtons();
+  _updateFormButtons();
 
-    _eventListeners();
-  }
-
-  init();
+  _eventListeners();
 });
