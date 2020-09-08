@@ -10,6 +10,16 @@ See the code of an example - [HTML](https://github.com/Kassaila/filter-inputs-ur
 
 ## Overview
 
+### Supported DOM elements types
+
+For tag `input`:
+
+`<input type="...">` - `['radio', 'color', 'range', 'date', 'month', 'week', 'time']`
+
+For tag `select`:
+
+`<select>` & `<select multiple>`
+
 ### HTML structure
 
 Minimal structure for `filter-inputs-url` initializing:
