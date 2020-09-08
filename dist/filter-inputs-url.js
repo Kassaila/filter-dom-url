@@ -93,8 +93,8 @@ var Filter = /*#__PURE__*/function () {
      */
 
   }, {
-    key: "_updateFiltersFromUrl",
-    value: function _updateFiltersFromUrl(urlFilters) {
+    key: "_updateFiltersDomFromUrl",
+    value: function _updateFiltersDomFromUrl(urlFilters) {
       var _this2 = this;
 
       var objectFilters = this._parseFiltersFromUrl(urlFilters);
@@ -163,8 +163,8 @@ var Filter = /*#__PURE__*/function () {
      */
 
   }, {
-    key: "_updateUrlFromFilters",
-    value: function _updateUrlFromFilters(e) {
+    key: "_updateUrlFromFiltersDom",
+    value: function _updateUrlFromFiltersDom(e) {
       var $filter = e.target;
       var filterName = $filter.getAttribute("".concat(this.filterAttr));
 
@@ -237,8 +237,8 @@ var Filter = /*#__PURE__*/function () {
      */
 
   }, {
-    key: "_setFiltersToGlobalUrl",
-    value: function _setFiltersToGlobalUrl(newUrl, setUrlFilters) {
+    key: "_setFiltersToUrl",
+    value: function _setFiltersToUrl(newUrl, setUrlFilters) {
       var updatableUrl = new URL(newUrl);
       updatableUrl.search = setUrlFilters;
       window.history.pushState(null, null, updatableUrl);
@@ -251,15 +251,15 @@ var Filter = /*#__PURE__*/function () {
     */
 
   }, {
-    key: "_resetGlobalUrl",
-    value: function _resetGlobalUrl() {
+    key: "_resetUrl",
+    value: function _resetUrl() {
       var _this3 = this;
 
       Object.keys(this._parseFiltersFromUrl(this.urlFilters)).forEach(function (filter) {
         _this3.urlFilters["delete"](filter);
       });
 
-      this._setFiltersToGlobalUrl(this.url, this.urlFilters);
+      this._setFiltersToUrl(this.url, this.urlFilters);
     }
     /**
     * Reset DOM elements
@@ -267,8 +267,8 @@ var Filter = /*#__PURE__*/function () {
     */
 
   }, {
-    key: "_resetFilters",
-    value: function _resetFilters() {
+    key: "_resetDom",
+    value: function _resetDom() {
       this.$form.reset();
     }
     /**
@@ -283,15 +283,15 @@ var Filter = /*#__PURE__*/function () {
 
       this.$form.querySelectorAll("[".concat(this.filterAttr, "]")).forEach(function ($filter) {
         $filter.addEventListener('change', function (e) {
-          _this4._updateUrlFromFilters(e);
+          _this4._updateUrlFromFiltersDom(e);
         });
       });
       window.addEventListener('popstate', function () {
         _this4._updateUrl();
 
-        _this4._resetFilters();
+        _this4._resetDom();
 
-        _this4._updateFiltersFromUrl(_this4.urlFilters);
+        _this4._updateFiltersDomFromUrl(_this4.urlFilters);
       });
     }
     /**
@@ -302,7 +302,7 @@ var Filter = /*#__PURE__*/function () {
   }, {
     key: "init",
     value: function init() {
-      this._updateFiltersFromUrl(this.urlFilters);
+      this._updateFiltersDomFromUrl(this.urlFilters);
 
       this._eventListeners();
     }
@@ -314,7 +314,7 @@ var Filter = /*#__PURE__*/function () {
   }, {
     key: "updateDom",
     value: function updateDom() {
-      this._updateFiltersFromUrl(this.urlFilters);
+      this._updateFiltersDomFromUrl(this.urlFilters);
     }
     /**
     * Reset url & window location URL
@@ -324,7 +324,7 @@ var Filter = /*#__PURE__*/function () {
   }, {
     key: "resetUrl",
     value: function resetUrl() {
-      this._resetGlobalUrl();
+      this._resetUrl();
     }
     /**
     * Reset DOM elements filters
@@ -334,7 +334,7 @@ var Filter = /*#__PURE__*/function () {
   }, {
     key: "resetDom",
     value: function resetDom() {
-      this._resetFilters();
+      this._resetDom();
     }
     /**
     * Set URLSearchParams to window.location
@@ -345,7 +345,7 @@ var Filter = /*#__PURE__*/function () {
   }, {
     key: "setFiltersToUrl",
     value: function setFiltersToUrl(newUrl) {
-      this._setFiltersToGlobalUrl(newUrl, this.urlFilters);
+      this._setFiltersToUrl(newUrl, this.urlFilters);
     }
     /**
     * Get filters types & values

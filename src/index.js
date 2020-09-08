@@ -77,7 +77,7 @@ class Filter {
    * @private
    * @param {object} urlFilters - URLSearchParam prototype
    */
-  _updateFiltersFromUrl(urlFilters) {
+  _updateFiltersDomFromUrl(urlFilters) {
     const objectFilters = this._parseFiltersFromUrl(urlFilters);
 
     if (Object.keys(objectFilters).length === 0) return;
@@ -139,7 +139,7 @@ class Filter {
    * @private
    * @param {object} e - DOM element event
    */
-  _updateUrlFromFilters(e) {
+  _updateUrlFromFiltersDom(e) {
     const $filter = e.target;
     const filterName = $filter.getAttribute(`${this.filterAttr}`);
     const filterType = Filter._checkFilterDomType($filter);
@@ -202,7 +202,7 @@ class Filter {
    * @param {object} newUrl - URL prototype
    * @param {object} setUrlFilters - URLSearchParams prototype
    */
-  _setFiltersToGlobalUrl(newUrl, setUrlFilters) {
+  _setFiltersToUrl(newUrl, setUrlFilters) {
     const updatableUrl = new URL(newUrl);
 
     updatableUrl.search = setUrlFilters;
@@ -215,19 +215,19 @@ class Filter {
   * Reset url & window.location URL
   * @private
   */
-  _resetGlobalUrl() {
+  _resetUrl() {
     Object.keys(this._parseFiltersFromUrl(this.urlFilters)).forEach((filter) => {
       this.urlFilters.delete(filter);
     });
 
-    this._setFiltersToGlobalUrl(this.url, this.urlFilters);
+    this._setFiltersToUrl(this.url, this.urlFilters);
   }
 
   /**
   * Reset DOM elements
   * @private
   */
-  _resetFilters() {
+  _resetDom() {
     this.$form.reset();
   }
 
@@ -238,16 +238,16 @@ class Filter {
   _eventListeners() {
     this.$form.querySelectorAll(`[${this.filterAttr}]`).forEach(($filter) => {
       $filter.addEventListener('change', (e) => {
-        this._updateUrlFromFilters(e);
+        this._updateUrlFromFiltersDom(e);
       });
     });
 
     window.addEventListener('popstate', () => {
       this._updateUrl();
 
-      this._resetFilters();
+      this._resetDom();
 
-      this._updateFiltersFromUrl(this.urlFilters);
+      this._updateFiltersDomFromUrl(this.urlFilters);
     });
   }
 
@@ -256,7 +256,7 @@ class Filter {
   * @public
   */
   init() {
-    this._updateFiltersFromUrl(this.urlFilters);
+    this._updateFiltersDomFromUrl(this.urlFilters);
 
     this._eventListeners();
   }
@@ -266,7 +266,7 @@ class Filter {
   * @public
   */
   updateDom() {
-    this._updateFiltersFromUrl(this.urlFilters);
+    this._updateFiltersDomFromUrl(this.urlFilters);
   }
 
   /**
@@ -274,7 +274,7 @@ class Filter {
   * @public
   */
   resetUrl() {
-    this._resetGlobalUrl();
+    this._resetUrl();
   }
 
   /**
@@ -282,7 +282,7 @@ class Filter {
   * @public
   */
   resetDom() {
-    this._resetFilters();
+    this._resetDom();
   }
 
   /**
@@ -291,7 +291,7 @@ class Filter {
   * @param {object} newUrl - URL prototype
   */
   setFiltersToUrl(newUrl) {
-    this._setFiltersToGlobalUrl(newUrl, this.urlFilters);
+    this._setFiltersToUrl(newUrl, this.urlFilters);
   }
 
   /**
