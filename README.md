@@ -4,7 +4,7 @@ Make easy way for filtering data with URLSearchParams & different types of input
 
 ## Example
 
-[A simple demo of usage `filter-inputs-url`](https://kassaila.github.io/filter-inputs-url/)
+A simple [demo](https://kassaila.github.io/filter-inputs-url/) of usage `filter-inputs-url`
 
 See the code of an example - [HTML](https://github.com/Kassaila/filter-inputs-url/blob/master/docs/index.html), [JS](https://github.com/Kassaila/filter-inputs-url/blob/master/examples/src/js/app.js)
 
@@ -22,7 +22,7 @@ Minimal structure for `filter-inputs-url` initialising:
 
 ### Usage
 
-Please import `Class Filter` from [file](https://github.com/Kassaila/filter-inputs-url/blob/master/dist/filter-inputs-url.js) or [file.min](https://github.com/Kassaila/filter-inputs-url/blob/master/dist/filter-inputs-url.min.js) and initialising:
+Please import `Filter` from [file](https://github.com/Kassaila/filter-inputs-url/blob/master/dist/filter-inputs-url.js) or [file.min](https://github.com/Kassaila/filter-inputs-url/blob/master/dist/filter-inputs-url.min.js) and initialise:
 
 ```
 import Filter from 'dist/filter-inputs-url';
