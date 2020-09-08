@@ -14,7 +14,7 @@ See the code of an example - [HTML](https://github.com/Kassaila/filter-inputs-ur
 
 For tag `input`:
 
-`<input type="...">` - `['radio', 'color', 'range', 'date', 'month', 'week', 'time']`
+`<input type="...">` - `['checkbox', 'radio', 'color', 'range', 'date', 'month', 'week', 'time']`
 
 For tag `select`:
 
