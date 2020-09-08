@@ -42,9 +42,9 @@ var Filter = /*#__PURE__*/function () {
   /**
    * Check filter type
    * @param {object} $filter - DOM element
-   * @returns {string} - filter type
+   * @returns {string} - filter DOM type
    * @example
-   * Filter.__checkFilterType(document.querySelector('[data-filter="example"]'));
+   * Filter.__checkFilterDomType(document.querySelector('[data-filter="example"]'));
    */
 
 
@@ -105,7 +105,7 @@ var Filter = /*#__PURE__*/function () {
 
         if (!$filter) return;
 
-        var filterType = Filter._checkFilterType($filter);
+        var filterType = Filter._checkFilterDomType($filter);
 
         switch (filterType) {
           case 'select-single':
@@ -168,7 +168,7 @@ var Filter = /*#__PURE__*/function () {
       var $filter = e.target;
       var filterName = $filter.getAttribute("".concat(this.filterAttr));
 
-      var filterType = Filter._checkFilterType($filter);
+      var filterType = Filter._checkFilterDomType($filter);
 
       switch (filterType) {
         case 'select-single':
@@ -361,18 +361,18 @@ var Filter = /*#__PURE__*/function () {
       return this._parseFiltersFromUrl(this.urlFilters);
     }
   }], [{
-    key: "_checkFilterType",
-    value: function _checkFilterType($filter) {
+    key: "_checkFilterDomType",
+    value: function _checkFilterDomType($filter) {
       var tagName = $filter.tagName.toLowerCase();
-      var filterType = null;
+      var filterDomType = null;
 
       if (tagName === 'select') {
-        filterType = $filter.multiple ? 'select-multiple' : 'select-single';
+        filterDomType = $filter.multiple ? 'select-multiple' : 'select-single';
       } else if (tagName === 'input') {
-        filterType = $filter.type;
+        filterDomType = $filter.type;
       }
 
-      return filterType;
+      return filterDomType;
     }
   }]);
 

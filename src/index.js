@@ -19,21 +19,21 @@ class Filter {
   /**
    * Check filter type
    * @param {object} $filter - DOM element
-   * @returns {string} - filter type
+   * @returns {string} - filter DOM type
    * @example
-   * Filter.__checkFilterType(document.querySelector('[data-filter="example"]'));
+   * Filter.__checkFilterDomType(document.querySelector('[data-filter="example"]'));
    */
-  static _checkFilterType($filter) {
+  static _checkFilterDomType($filter) {
     const tagName = $filter.tagName.toLowerCase();
-    let filterType = null;
+    let filterDomType = null;
 
     if (tagName === 'select') {
-      filterType = $filter.multiple ? 'select-multiple' : 'select-single';
+      filterDomType = $filter.multiple ? 'select-multiple' : 'select-single';
     } else if (tagName === 'input') {
-      filterType = $filter.type;
+      filterDomType = $filter.type;
     }
 
-    return filterType;
+    return filterDomType;
   }
 
   /**
@@ -87,7 +87,7 @@ class Filter {
 
       if (!$filter) return;
 
-      const filterType = Filter._checkFilterType($filter);
+      const filterType = Filter._checkFilterDomType($filter);
 
       switch (filterType) {
         case 'select-single':
@@ -142,7 +142,7 @@ class Filter {
   _updateUrlFromFilters(e) {
     const $filter = e.target;
     const filterName = $filter.getAttribute(`${this.filterAttr}`);
-    const filterType = Filter._checkFilterType($filter);
+    const filterType = Filter._checkFilterDomType($filter);
 
     switch (filterType) {
       case 'select-single':
