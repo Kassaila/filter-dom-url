@@ -40,7 +40,7 @@ var Filter = /*#__PURE__*/function () {
     this.urlFilters = new URLSearchParams(decodeURIComponent(this.url.searchParams));
   }
   /**
-   * Check filter type
+   * Check filter DOM type
    * @param {object} $filter - DOM element
    * @returns {string} - filter DOM type
    * @example

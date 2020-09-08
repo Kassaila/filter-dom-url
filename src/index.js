@@ -17,7 +17,7 @@ class Filter {
   }
 
   /**
-   * Check filter type
+   * Check filter DOM type
    * @param {object} $filter - DOM element
    * @returns {string} - filter DOM type
    * @example

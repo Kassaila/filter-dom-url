@@ -12,7 +12,7 @@ See the code of an example - [HTML](https://github.com/Kassaila/filter-inputs-ur
 
 ### HTML structure
 
-Minimal structure for `filter-inputs-url` initialising:
+Minimal structure for `filter-inputs-url` initializing:
 
 ```
 <form data-filter-form="form-example">
@@ -22,7 +22,7 @@ Minimal structure for `filter-inputs-url` initialising:
 
 ### Usage
 
-Please import `Filter` from [file](https://github.com/Kassaila/filter-inputs-url/blob/master/dist/filter-inputs-url.js) or [file.min](https://github.com/Kassaila/filter-inputs-url/blob/master/dist/filter-inputs-url.min.js) and initialise:
+Please import `Filter` from [file](https://github.com/Kassaila/filter-inputs-url/blob/master/dist/filter-inputs-url.js) or [file.min](https://github.com/Kassaila/filter-inputs-url/blob/master/dist/filter-inputs-url.min.js) and initialize:
 
 ```
 import Filter from 'dist/filter-inputs-url';
