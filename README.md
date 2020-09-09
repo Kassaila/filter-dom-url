@@ -42,5 +42,5 @@ const filterExample = new Filter({
   filterAttr: 'data-filter',
 });
 
-filterExample.initFilters();
+filterExample.init();
 ```
