@@ -11,8 +11,8 @@
     <section>
       <div>
         @@for (var i = 0; i < 5; i++) { <div>
-          <label for="id-1-`+[i]+`">
-            <input id="id-1-`+[i]+`" value="id-1-`+[i]+`" data-filter="checkbox" type="checkbox">
+          <label for="id-checkbox-`+[i]+`">
+            <input id="id-checkbox-`+[i]+`" value="checkbox-`+[i]+`" data-filter="checkbox" type="checkbox">
             <span>checkbox `+[i]+`</span>
           </label>
       </div>
@@ -20,8 +20,8 @@
       </div>
       <div>
         @@for (var i = 0; i < 5; i++) { <div>
-          <label for="id-2-`+[i]+`">
-            <input id="id-2-`+[i]+`" value="id-2-`+[i]+`" name="radio" data-filter="radio" type="radio">
+          <label for="id-radio-`+[i]+`">
+            <input id="id-radio-`+[i]+`" value="radio-`+[i]+`" name="radio" data-filter="radio" type="radio">
             <span>radio `+[i]+`</span>
           </label>
       </div>
@@ -29,9 +29,9 @@
       </div>
       <div>
         @@for (var i = 0; i < 3; i++) { <div>
-          <label for="id-3-`+[i]+`">
+          <label for="id-select-`+[i]+`">
             <p>select `+[i]+`</p>
-            <select id="id-3-`+[i]+`" data-filter="select-`+[i]+`">
+            <select id="id-select-`+[i]+`" data-filter="select-`+[i]+`">
               <option value="option-`+[i]+`-0">option-`+[i]+`-0</option>
               <option value="option-`+[i]+`-1">option-`+[i]+`-1</option>
               <option value="option-`+[i]+`-2">option-`+[i]+`-2</option>
@@ -41,9 +41,9 @@
       }
       </div>
       <div>
-        <label for="id-5">
+        <label for="id-select-multiple">
           <p>select multiple</p>
-          <select id="id-5" data-filter="select-multiple" multiple>
+          <select id="id-select-multiple" data-filter="select-multiple" multiple>
             <option value="option-0">option-0</option>
             <option value="option-1">option-1</option>
             <option value="option-2">option-2</option>
@@ -53,39 +53,39 @@
         </label>
       </div>
       <div>
-        <label for="id-6">
+        <label for="id-color">
           <p>input color</p>
-          <input id="id-6" data-filter="color" type="color">
+          <input id="id-color" data-filter="color" type="color">
         </label>
       </div>
       <div>
-        <label for="id-7">
+        <label for="id-range">
           <p>input range</p>
-          <input id="id-7" data-filter="range" type="range" min="0" max="100" step="10">
+          <input id="id-range" data-filter="range" type="range" min="0" max="100" step="10">
         </label>
       </div>
       <div>
-        <label for="id-8">
+        <label for="id-date">
           <p>input date</p>
-          <input id="id-8" data-filter="date" type="date">
+          <input id="id-date" data-filter="date" type="date">
         </label>
       </div>
       <div>
-        <label for="id-9">
+        <label for="id-month">
           <p>input month</p>
-          <input id="id-9" data-filter="month" type="month">
+          <input id="id-month" data-filter="month" type="month">
         </label>
       </div>
       <div>
-        <label for="id-10">
+        <label for="id-week">
           <p>input week</p>
-          <input id="id-10" data-filter="week" type="week">
+          <input id="id-week" data-filter="week" type="week">
         </label>
       </div>
       <div>
-        <label for="id-11">
+        <label for="id-time">
           <p>input time</p>
-          <input id="id-11" data-filter="time" type="time">
+          <input id="id-time" data-filter="time" type="time">
         </label>
       </div>
     </section>
