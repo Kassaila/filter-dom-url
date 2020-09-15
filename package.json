@@ -1,7 +1,7 @@
 {
-  "name": "filter-inputs-url",
-  "version": "0.1.0",
-  "description": "Filtering data with inputs, select & url",
+  "name": "@kassaila/filter-dom-url",
+  "version": "0.1.2",
+  "description": "Filtering data with input, select & URL (URLSearchParams)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Kassaila/filter-inputs-url"
@@ -10,7 +10,9 @@
     "filter",
     "input",
     "select",
-    "url"
+    "url",
+    "URL",
+    "URLSearchParams"
   ],
   "author": "Dmytro Symonov, Kassaila",
   "license": "MIT",
@@ -40,10 +42,10 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "dev": "gulp",
-    "test": "gulp build --log-level -LLLL",
-    "build": "gulp build",
-    "fix-js": "gulp fix-js"
+    "dev": "npx gulp",
+    "test": "npx gulp build --log-level -LLLL",
+    "build": "npx gulp build",
+    "fix-js": "npx gulp fix-js"
   },
   "dependencies": {}
 }
