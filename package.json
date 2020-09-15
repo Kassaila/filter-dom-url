@@ -1,10 +1,10 @@
 {
   "name": "@kassaila/filter-dom-url",
-  "version": "0.1.2",
+  "version": "0.2.2",
   "description": "Filtering data with input, select & URL (URLSearchParams)",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Kassaila/filter-inputs-url"
+    "url": "git+https://github.com/Kassaila/filter-dom-url"
   },
   "keywords": [
     "filter",
@@ -17,9 +17,9 @@
   "author": "Dmytro Symonov, Kassaila",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Kassaila/filter-inputs-url/issues"
+    "url": "https://github.com/Kassaila/filter-dom-url/issues"
   },
-  "homepage": "https://github.com/Kassaila/filter-inputs-url",
+  "homepage": "https://github.com/Kassaila/filter-dom-url",
   "devDependencies": {
     "@babel/core": "^7.11.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.11.0",

@@ -1,4 +1,4 @@
-import Filter from '../../../dist/filter-inputs-url';
+import Filter from '../../../dist/filter-dom-url';
 
 window.addEventListener('load', () => {
   const $form = document.querySelector('[data-filter-form="example"]');

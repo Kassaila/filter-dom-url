@@ -7,10 +7,10 @@ work is not in vain.
 
 ## Issues
 
-Most of the time, if `filter-inputs-url` is not working correctly for you, it is a simple configuration issue.
+Most of the time, if `filter-dom-url` is not working correctly for you, it is a simple configuration issue.
 
 **If you have discovered a bug or have a feature suggestion,
-please [create an issue on GitHub](https://github.com/Kassaila/filter-inputs-url/issues/new).**
+please [create an issue on GitHub](https://github.com/Kassaila/filter-dom-url/issues/new).**
 
 ## Setup
 
