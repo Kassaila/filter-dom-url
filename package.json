@@ -20,6 +20,9 @@
     "url": "https://github.com/Kassaila/filter-dom-url/issues"
   },
   "homepage": "https://github.com/Kassaila/filter-dom-url",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "devDependencies": {
     "@babel/core": "^7.11.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
