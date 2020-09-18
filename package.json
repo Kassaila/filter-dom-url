@@ -1,6 +1,6 @@
 {
   "name": "@kassaila/filter-dom-url",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "description": "Filtering data with input, select & URL (URLSearchParams)",
   "repository": {
     "type": "git",
