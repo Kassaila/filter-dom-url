@@ -1,5 +1,5 @@
 {
-  "name": "@kassaila/filter-dom-url",
+  "name": "filter-dom-url",
   "version": "0.2.4",
   "description": "Filtering data with input, select & URL (URLSearchParams)",
   "repository": {
