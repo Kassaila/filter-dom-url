@@ -1,6 +1,6 @@
 {
   "name": "@kassaila/filter-dom-url",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Filtering data with input, select & URL (URLSearchParams)",
   "repository": {
     "type": "git",
@@ -30,8 +30,6 @@
     "@babel/plugin-transform-runtime": "^7.11.0",
     "@babel/preset-env": "^7.11.0",
     "@babel/runtime": "^7.11.2",
-    "babel-loader": "^8.1.0",
-    "babel-preset-minify": "^0.5.1",
     "del": "^5.1.0",
     "eslint": "^7.7.0",
     "eslint-config-airbnb-base": "^14.2.0",
@@ -48,6 +46,7 @@
     "dev": "npx gulp",
     "test": "npx gulp build --log-level -LLLL",
     "build": "npx gulp build",
+    "lint-js": "npx gulp lint-js",
     "fix-js": "npx gulp fix-js"
   },
   "dependencies": {}
