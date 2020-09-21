@@ -2,8 +2,8 @@
 class Filter {
   /**
      * Create the Filter instance
-     * @param {string} filterAttr - filters identification attribute
-     * @param {string} formAttr - filters form identification attribute
+     * @param {string} options.filterAttr - filters identification attribute
+     * @param {string} options.formAttr - filters form identification attribute
      */
   constructor(options) {
     this.filterAttr = options.filterAttr;
@@ -18,12 +18,13 @@ class Filter {
 
   /**
    * Check filter DOM type
+   * @public
    * @param {object} $filter - DOM element
    * @returns {string} - filter DOM type
    * @example
-   * Filter.__checkFilterDomType(document.querySelector('[data-filter="example"]'));
+   * Filter.checkFilterDomType(document.querySelector('[data-filter="example"]'));
    */
-  static _checkFilterDomType($filter) {
+  static checkFilterDomType($filter) {
     const tagName = $filter.tagName.toLowerCase();
     let filterDomType = null;
 
@@ -44,7 +45,7 @@ class Filter {
    *  filter-type: ['filter-value'],
    * }
    */
-  _parseFiltersFromUrl(urlFilters) {
+  #parseFiltersFromUrl (urlFilters) {
     const filters = [...urlFilters.entries()];
     const objectFilters = {};
 
@@ -67,7 +68,7 @@ class Filter {
    * Update url & urlFilters
    * @private
    */
-  _updateUrl() {
+  #updateUrl () {
     this.url = new URL(window.location.href);
     this.urlFilters = new URLSearchParams(this.url.searchParams);
   }
@@ -77,8 +78,8 @@ class Filter {
    * @private
    * @param {object} urlFilters - URLSearchParam prototype
    */
-  _updateFiltersDomFromUrl(urlFilters) {
-    const objectFilters = this._parseFiltersFromUrl(urlFilters);
+  #updateFiltersDomFromUrl (urlFilters) {
+    const objectFilters = this.#parseFiltersFromUrl(urlFilters);
 
     if (Object.keys(objectFilters).length === 0) return;
 
@@ -87,7 +88,7 @@ class Filter {
 
       if (!$filter) return;
 
-      const filterType = Filter._checkFilterDomType($filter);
+      const filterType = Filter.checkFilterDomType($filter);
 
       switch (filterType) {
         case 'select-single':
@@ -139,10 +140,10 @@ class Filter {
    * @private
    * @param {object} e - DOM element event
    */
-  _updateUrlFromFiltersDom(e) {
+  #updateUrlFromFiltersDom (e) {
     const $filter = e.target;
     const filterName = $filter.getAttribute(`${this.filterAttr}`);
-    const filterType = Filter._checkFilterDomType($filter);
+    const filterType = Filter.checkFilterDomType($filter);
 
     switch (filterType) {
       case 'select-single':
@@ -202,32 +203,32 @@ class Filter {
    * @param {object} newUrl - URL prototype
    * @param {object} setUrlFilters - URLSearchParams prototype
    */
-  _setFiltersToUrl(newUrl, setUrlFilters) {
+  #setFiltersToUrl (newUrl, setUrlFilters) {
     const updatableUrl = new URL(newUrl);
 
     updatableUrl.search = setUrlFilters;
     window.history.pushState(null, null, updatableUrl);
 
-    this._updateUrl();
+    this.#updateUrl();
   }
 
   /**
   * Reset url & window.location URL
   * @private
   */
-  _resetUrl() {
-    Object.keys(this._parseFiltersFromUrl(this.urlFilters)).forEach((filter) => {
+  #resetUrl () {
+    Object.keys(this.#parseFiltersFromUrl(this.urlFilters)).forEach((filter) => {
       this.urlFilters.delete(filter);
     });
 
-    this._setFiltersToUrl(this.url, this.urlFilters);
+    this.#setFiltersToUrl(this.url, this.urlFilters);
   }
 
   /**
   * Reset DOM elements
   * @private
   */
-  _resetDom() {
+  #resetDom () {
     this.$form.reset();
   }
 
@@ -235,19 +236,19 @@ class Filter {
   * Event listeners
   * @private
   */
-  _eventListeners() {
+  #eventListeners () {
     this.$form.querySelectorAll(`[${this.filterAttr}]`).forEach(($filter) => {
       $filter.addEventListener('change', (e) => {
-        this._updateUrlFromFiltersDom(e);
+        this.#updateUrlFromFiltersDom(e);
       });
     });
 
     window.addEventListener('popstate', () => {
-      this._updateUrl();
+      this.#updateUrl();
 
-      this._resetDom();
+      this.#resetDom();
 
-      this._updateFiltersDomFromUrl(this.urlFilters);
+      this.#updateFiltersDomFromUrl(this.urlFilters);
     });
   }
 
@@ -256,9 +257,9 @@ class Filter {
   * @public
   */
   init() {
-    this._updateFiltersDomFromUrl(this.urlFilters);
+    this.#updateFiltersDomFromUrl(this.urlFilters);
 
-    this._eventListeners();
+    this.#eventListeners();
   }
 
   /**
@@ -266,7 +267,7 @@ class Filter {
   * @public
   */
   updateDom() {
-    this._updateFiltersDomFromUrl(this.urlFilters);
+    this.#updateFiltersDomFromUrl(this.urlFilters);
   }
 
   /**
@@ -274,7 +275,7 @@ class Filter {
   * @public
   */
   resetUrl() {
-    this._resetUrl();
+    this.#resetUrl();
   }
 
   /**
@@ -282,7 +283,7 @@ class Filter {
   * @public
   */
   resetDom() {
-    this._resetDom();
+    this.#resetDom();
   }
 
   /**
@@ -291,7 +292,7 @@ class Filter {
   * @param {object} newUrl - URL prototype
   */
   setFiltersToUrl(newUrl) {
-    this._setFiltersToUrl(newUrl, this.urlFilters);
+    this.#setFiltersToUrl(newUrl, this.urlFilters);
   }
 
   /**
@@ -302,7 +303,7 @@ class Filter {
   * }
   */
   getFilters() {
-    return this._parseFiltersFromUrl(this.urlFilters);
+    return this.#parseFiltersFromUrl(this.urlFilters);
   }
 }
 
