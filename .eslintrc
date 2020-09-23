@@ -12,7 +12,8 @@
     "es2021": true
   },
   "plugins": [
-    "import"
+    "import",
+    "@babel"
   ],
   "extends": [
     "airbnb-base"

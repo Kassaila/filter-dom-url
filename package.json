@@ -1,6 +1,6 @@
 {
   "name": "@kassaila/filter-dom-url",
-  "version": "0.3.7",
+  "version": "0.4.0",
   "description": "Filtering data with input, select & URL (URLSearchParams)",
   "keywords": [
     "filter",
@@ -22,7 +22,7 @@
   "main": "./dist/filter-dom-url.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Kassaila/filter-dom-url.git"
+    "url": "git+https://github.com/Kassaila/filter-dom-url.git"
   },
   "publishConfig": {
     "access": "public",
@@ -31,6 +31,7 @@
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/eslint-parser": "^7.11.5",
+    "@babel/eslint-plugin": "^7.11.5",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
     "@babel/plugin-proposal-private-methods": "^7.10.4",
