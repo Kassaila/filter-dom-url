@@ -1,7 +1,12 @@
 /** Class representing a Filter */
 class Filter {
+  // Error message
+  #checkAttrErrorMessage = `Filter initializing error.
+  Please enter correct attribute for DOM element`;
+
   /**
      * Create the Filter instance
+     * @param {object} options - identification attribute
      * @param {string} options.filterAttr - filters identification attribute
      * @param {string} options.formAttr - filters form identification attribute
      */
@@ -35,6 +40,17 @@ class Filter {
     }
 
     return filterDomType;
+  }
+
+  /**
+     * Check attribute and DOM element
+     * @private
+     * @param {string} attr - DOM element attribute
+     * @example
+     * #checkDomElementAttr('data-filter');
+     */
+  #checkDomElementAttr (attr) {
+    return typeof attr === 'string' && document.querySelectorAll(`[${attr}]`).length !== 0;
   }
 
   /**
@@ -198,7 +214,7 @@ class Filter {
   }
 
   /**
-   * Set window.location URL & update history
+   * Set filters to window.location URL & update history
    * @private
    * @param {object} newUrl - URL prototype
    * @param {object} setUrlFilters - URLSearchParams prototype
@@ -257,6 +273,11 @@ class Filter {
   * @public
   */
   init() {
+    if (!this.#checkDomElementAttr(this.formAttr)
+      || !this.#checkDomElementAttr(this.filterAttr)) {
+      throw new Error(this.#checkAttrErrorMessage);
+    }
+
     this.#updateFiltersDomFromUrl(this.urlFilters);
 
     this.#eventListeners();
@@ -271,7 +292,7 @@ class Filter {
   }
 
   /**
-  * Reset url & window location URL
+  * Reset url & window.location URL
   * @public
   */
   resetUrl() {
@@ -287,7 +308,7 @@ class Filter {
   }
 
   /**
-  * Set URLSearchParams to window.location
+  * Set URLSearchParams to window.location URL
   * @public
   * @param {object} newUrl - URL prototype
   */

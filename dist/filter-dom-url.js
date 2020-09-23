@@ -23,7 +23,13 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _classPrivateFieldGet(receiver, privateMap) { var descriptor = privateMap.get(receiver); if (!descriptor) { throw new TypeError("attempted to get private field on non-instance"); } if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
+
 function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
+
+var _checkAttrErrorMessage = new WeakMap();
+
+var _checkDomElementAttr = new WeakSet();
 
 var _parseFiltersFromUrl = new WeakSet();
 
@@ -43,8 +49,11 @@ var _eventListeners = new WeakSet();
 
 /** Class representing a Filter */
 var Filter = /*#__PURE__*/function () {
+  // Error message
+
   /**
      * Create the Filter instance
+     * @param {object} options - identification attribute
      * @param {string} options.filterAttr - filters identification attribute
      * @param {string} options.formAttr - filters form identification attribute
      */
@@ -66,6 +75,13 @@ var Filter = /*#__PURE__*/function () {
     _updateUrl.add(this);
 
     _parseFiltersFromUrl.add(this);
+
+    _checkDomElementAttr.add(this);
+
+    _checkAttrErrorMessage.set(this, {
+      writable: true,
+      value: "Filter initializing error.\n  Please enter correct attribute for DOM element"
+    });
 
     this.filterAttr = options.filterAttr;
     this.formAttr = options.formAttr;
@@ -91,6 +107,10 @@ var Filter = /*#__PURE__*/function () {
     * @public
     */
     value: function init() {
+      if (!_classPrivateMethodGet(this, _checkDomElementAttr, _checkDomElementAttr2).call(this, this.formAttr) || !_classPrivateMethodGet(this, _checkDomElementAttr, _checkDomElementAttr2).call(this, this.filterAttr)) {
+        throw new Error(_classPrivateFieldGet(this, _checkAttrErrorMessage));
+      }
+
       _classPrivateMethodGet(this, _updateFiltersDomFromUrl, _updateFiltersDomFromUrl2).call(this, this.urlFilters);
 
       _classPrivateMethodGet(this, _eventListeners, _eventListeners2).call(this);
@@ -106,7 +126,7 @@ var Filter = /*#__PURE__*/function () {
       _classPrivateMethodGet(this, _updateFiltersDomFromUrl, _updateFiltersDomFromUrl2).call(this, this.urlFilters);
     }
     /**
-    * Reset url & window location URL
+    * Reset url & window.location URL
     * @public
     */
 
@@ -126,7 +146,7 @@ var Filter = /*#__PURE__*/function () {
       _classPrivateMethodGet(this, _resetDom, _resetDom2).call(this);
     }
     /**
-    * Set URLSearchParams to window.location
+    * Set URLSearchParams to window.location URL
     * @public
     * @param {object} newUrl - URL prototype
     */
@@ -164,18 +184,21 @@ var Filter = /*#__PURE__*/function () {
       return filterDomType;
     }
     /**
-     * Parse URLSearchParam
-     * @private
-     * @param {object} urlFilters - URLSearchParam prototype
-     * @returns {object} - {
-     *  filter-type: ['filter-value'],
-     * }
-     */
+       * Check attribute and DOM element
+       * @private
+       * @param {string} attr - DOM element attribute
+       * @example
+       * #checkDomElementAttr('data-filter');
+       */
 
   }]);
 
   return Filter;
 }();
+
+var _checkDomElementAttr2 = function _checkDomElementAttr2(attr) {
+  return typeof attr === 'string' && document.querySelectorAll("[".concat(attr, "]")).length !== 0;
+};
 
 var _parseFiltersFromUrl2 = function _parseFiltersFromUrl2(urlFilters) {
   var _this = this;
