@@ -2,6 +2,13 @@
 
 Make easy way for filtering data with URLSearchParams & different types of inputs, selects.
 
+[![release](https://img.shields.io/github/release/kassaila/filter-dom-url.svg)](/releases)
+[![license](http://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![requests](http://img.shields.io/badge/PRs-welcome-green.svg)](/pulls)
+
+[![Build Status](https://travis-ci.org/Kassaila/filter-dom-url.svg?branch=master)](https://travis-ci.org/Kassaila/filter-dom-url)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Kassaila_filter-dom-url&metric=alert_status)](https://sonarcloud.io/dashboard?id=Kassaila_filter-dom-url)
+
 ## Example
 
 A simple [demo](https://kassaila.github.io/filter-dom-url/) of usage `filter-dom-url`
