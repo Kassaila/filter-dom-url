@@ -37,13 +37,25 @@ Minimal structure for `filter-dom-url` initializing:
 </form>
 ```
 
-### Usage
+### Install
 
-Please import `Filter` from [file](https://github.com/Kassaila/filter-dom-url/blob/master/dist/filter-dom-url.js) or [file.min](https://github.com/Kassaila/filter-dom-url/blob/master/dist/filter-dom-url.min.js) and initialize:
+Install package from [npm](https://www.npmjs.com/package/@kassaila/filter-dom-url) and import:
+
+```
+import Filter from '@kassaila/filter-dom-url';
+```
+
+or copy [file](https://github.com/Kassaila/filter-dom-url/blob/master/dist/filter-dom-url.js) or [file.min](https://github.com/Kassaila/filter-dom-url/blob/master/dist/filter-dom-url.min.js) to your project and import:
 
 ```
 import Filter from 'dist/filter-dom-url';
+```
 
+### Usage
+
+Create `Filter` instance and initialize:
+
+```
 const filterExample = new Filter({
   formAttr: 'data-filter-form="form-example"',
   filterAttr: 'data-filter',
