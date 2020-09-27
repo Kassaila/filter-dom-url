@@ -2,6 +2,8 @@
 
 Make easy way for filtering data with URLSearchParams & different types of inputs, selects.
 
+[![npm](https://img.shields.io/npm/v/@kassaila/filter-dom-url.svg)](https://www.npmjs.com/package/@kassaila/filter-dom-url)
+
 [![release](https://img.shields.io/github/release/kassaila/filter-dom-url.svg)](/releases)
 [![license](http://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![requests](http://img.shields.io/badge/PRs-welcome-green.svg)](/pulls)
