@@ -16,10 +16,11 @@ module.exports = function () {
     basepath: `./${global.buildHtml.templates}`,
     indent: true,
     context: {
-      mainJs: production ? global.file.mainJsMin : global.file.mainJs,
-      vendorJs: production ? global.file.vendorJsMin : global.file.vendorJs,
-      mainStyles: production ? global.file.mainStylesMin : global.file.mainStyles,
-      vendorStyles: production ? global.file.vendorStylesMin : global.file.vendorStyles,
+      min: production ? '.min' : '',
+      mainJs: global.file.mainJs,
+      vendorJs: global.file.vendorJs,
+      mainStyles: global.file.mainStyles,
+      vendorStyles: global.file.vendorStyles,
     },
   };
 

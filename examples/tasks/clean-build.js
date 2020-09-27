@@ -18,7 +18,7 @@ module.exports = function () {
     `./${global.folder.dev}/**`,
   ];
   const buildFolders = production ? [
-    `./${global.folder.build}/**`,
+    `../${global.folder.build}/**`,
   ] : [];
   const delFolders = [
     ...devFolders,

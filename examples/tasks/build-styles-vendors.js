@@ -17,7 +17,7 @@ sass.compiler = require('sass');
 
 module.exports = function () {
   const production = global.isProduction();
-  const vendorFileName = production ? global.file.vendorStylesMin : global.file.vendorStyles;
+  const vendorFileName = production ? `${global.file.vendorStyles}.min.css` : `${global.file.vendorStyles}.css`;
   const plugins = [
     cssimport(),
   ];
@@ -25,7 +25,7 @@ module.exports = function () {
   production ? plugins.push(cssnano()) : null;
 
   return (done) => {
-    return gulp.src(`./${global.folder.src}/vendor_entries/${global.file.vendorStylesSrc}`)
+    return gulp.src(`./${global.folder.src}/vendor_entries/${global.file.vendorStyles}.scss`)
       .pipe(rename(vendorFileName))
       .pipe(sass.sync())
       .on('error', (error) => notifier.error(error.message, 'Vendor Sass compiling error', done))
