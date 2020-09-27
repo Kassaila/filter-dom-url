@@ -53,7 +53,7 @@ var Filter = /*#__PURE__*/function () {
 
   /**
      * Create the Filter instance
-     * @param {object} options - identification attribute
+     * @param {object} options - identification attributes
      * @param {string} options.filterAttr - filters identification attribute
      * @param {string} options.formAttr - filters form identification attribute
      */
@@ -187,6 +187,7 @@ var Filter = /*#__PURE__*/function () {
        * Check attribute and DOM element
        * @private
        * @param {string} attr - DOM element attribute
+       * @returns {boolean}
        * @example
        * #checkDomElementAttr('data-filter');
        */

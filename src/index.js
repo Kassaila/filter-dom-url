@@ -6,7 +6,7 @@ class Filter {
 
   /**
      * Create the Filter instance
-     * @param {object} options - identification attribute
+     * @param {object} options - identification attributes
      * @param {string} options.filterAttr - filters identification attribute
      * @param {string} options.formAttr - filters form identification attribute
      */
@@ -46,6 +46,7 @@ class Filter {
      * Check attribute and DOM element
      * @private
      * @param {string} attr - DOM element attribute
+     * @returns {boolean}
      * @example
      * #checkDomElementAttr('data-filter');
      */
