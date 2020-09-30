@@ -12,10 +12,6 @@ Most of the time, if `filter-dom-url` is not working correctly for you, it is a 
 **If you have discovered a bug or have a feature suggestion,
 please [create an issue on GitHub](https://github.com/Kassaila/filter-dom-url/issues/new).**
 
-## Setup
-
-[Setup your local webpack repository](_SETUP.md)
-
 ## Submitting Changes
 
 After getting some feedback, push to your fork and submit a pull request. We
@@ -24,7 +20,7 @@ your pull request should be accepted quickly.
 
 ## Join the development
 
-- Before you join development, please [set up the project](./_SETUP.md) on your local machine, run it and go through the application completely.
+- Before you join development, please [set up the project](_SETUP.md) on your local machine, run it and go through the application completely.
 Use any command you can find and see what it does. Explore.
 
 - If you would like to work on an issue, drop in a comment at the issue.
