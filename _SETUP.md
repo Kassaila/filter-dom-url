@@ -1,5 +1,7 @@
 # Setup
 
+Setup for develope and contribute.
+
 At `filter-dom-url` we use `npm` to execute commands.
 
 Do: `npm i`, the setup will also install project for you.

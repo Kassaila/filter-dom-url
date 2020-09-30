@@ -1,6 +1,6 @@
 {
   "name": "@kassaila/filter-dom-url",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Filtering data with input, select & URL (URLSearchParams)",
   "keywords": [
     "filter",
@@ -20,6 +20,11 @@
     "email": "kasela.kassaila@gmail.com"
   },
   "main": "./dist/filter-dom-url.js",
+  "files": [
+    "dist",
+    "docs",
+    "src"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Kassaila/filter-dom-url.git"
