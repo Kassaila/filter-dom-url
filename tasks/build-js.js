@@ -20,7 +20,7 @@ module.exports = function () {
       .pipe(babel({
         presets: ['minify'],
       }))
-      .pipe(rename(`${global.file.mainJsMin}.js`))
+      .pipe(rename(`${global.file.mainJs}.min.js`))
       .pipe(gulp.dest(`./${global.folder.build}`));
   };
 };

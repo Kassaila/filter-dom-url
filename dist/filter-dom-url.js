@@ -47,16 +47,7 @@ var _resetDom = new WeakSet();
 
 var _eventListeners = new WeakSet();
 
-/** Class representing a Filter */
-var Filter = /*#__PURE__*/function () {
-  // Error message
-
-  /**
-     * Create the Filter instance
-     * @param {object} options - identification attributes
-     * @param {string} options.filterAttr - filters identification attribute
-     * @param {string} options.formAttr - filters form identification attribute
-     */
+var Filter = function () {
   function Filter(options) {
     _classCallCheck(this, Filter);
 
@@ -89,23 +80,9 @@ var Filter = /*#__PURE__*/function () {
     this.url = new URL(window.location.href);
     this.urlFilters = new URLSearchParams(decodeURIComponent(this.url.searchParams));
   }
-  /**
-   * Check filter DOM type
-   * @public
-   * @param {object} $filter - DOM element
-   * @returns {string} - filter DOM type
-   * @example
-   * Filter.checkFilterDomType(document.querySelector('[data-filter="example"]'));
-   */
-
 
   _createClass(Filter, [{
     key: "init",
-
-    /**
-    * Instance initialization
-    * @public
-    */
     value: function init() {
       if (!_classPrivateMethodGet(this, _checkDomElementAttr, _checkDomElementAttr2).call(this, this.formAttr) || !_classPrivateMethodGet(this, _checkDomElementAttr, _checkDomElementAttr2).call(this, this.filterAttr)) {
         throw new Error(_classPrivateFieldGet(this, _checkAttrErrorMessage));
@@ -115,55 +92,26 @@ var Filter = /*#__PURE__*/function () {
 
       _classPrivateMethodGet(this, _eventListeners, _eventListeners2).call(this);
     }
-    /**
-    * Update DOM elements filters
-    * @public
-    */
-
   }, {
     key: "updateDom",
     value: function updateDom() {
       _classPrivateMethodGet(this, _updateFiltersDomFromUrl, _updateFiltersDomFromUrl2).call(this, this.urlFilters);
     }
-    /**
-    * Reset url & window.location URL
-    * @public
-    */
-
   }, {
     key: "resetUrl",
     value: function resetUrl() {
       _classPrivateMethodGet(this, _resetUrl, _resetUrl2).call(this);
     }
-    /**
-    * Reset DOM elements filters
-    * @public
-    */
-
   }, {
     key: "resetDom",
     value: function resetDom() {
       _classPrivateMethodGet(this, _resetDom, _resetDom2).call(this);
     }
-    /**
-    * Set URLSearchParams to window.location URL
-    * @public
-    * @param {object} newUrl - URL prototype
-    */
-
   }, {
     key: "setFiltersToUrl",
     value: function setFiltersToUrl(newUrl) {
       _classPrivateMethodGet(this, _setFiltersToUrl, _setFiltersToUrl2).call(this, newUrl, this.urlFilters);
     }
-    /**
-    * Get filters types & values
-    * @public
-    * @returns {object} - {
-    *  filter-type: ['filter-value'],
-    * }
-    */
-
   }, {
     key: "getFilters",
     value: function getFilters() {
@@ -183,15 +131,6 @@ var Filter = /*#__PURE__*/function () {
 
       return filterDomType;
     }
-    /**
-       * Check attribute and DOM element
-       * @private
-       * @param {string} attr - DOM element attribute
-       * @returns {boolean}
-       * @example
-       * #checkDomElementAttr('data-filter');
-       */
-
   }]);
 
   return Filter;

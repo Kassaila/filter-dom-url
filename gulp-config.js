@@ -14,7 +14,6 @@ module.exports = {
   },
   file: {
     mainJs: 'filter-dom-url',
-    mainJsMin: 'filter-dom-url.min',
   },
   error: {
     sound: true,

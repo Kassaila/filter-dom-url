@@ -19,5 +19,6 @@
         "helpers": false
       }
     ]
-  ]
+  ],
+  "comments": false
 }
