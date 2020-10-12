@@ -55,13 +55,18 @@ import Filter from 'dist/filter-dom-url';
 
 ### Usage
 
-Create `Filter` instance and initialize:
+Create `Filter` instance:
 
 ```
 const filterExample = new Filter({
   formAttr: 'data-filter-form="form-example"',
   filterAttr: 'data-filter',
 });
-
-filterExample.init();
 ```
+
+### API
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| init() | function | Instance initialization |
+|  |  |  |
