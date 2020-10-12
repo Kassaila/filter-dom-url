@@ -64,9 +64,11 @@ const filterExample = new Filter({
 });
 ```
 
-### API
+## API
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| init() | function | Instance initialization |
-|  |  |  |
+| Parameter | Type | Arguments | Description |
+| --- | --- | --- | --- |
+| ***init()*** | function | - | Instance initialization |
+| ***updateDom()*** | function | - | Update DOM elements (filters) from URL |
+| ***setFiltersToUrl(newUrl)*** | function | ***newUrl*** - object (URL prototype). Base page URL, you can set from window.location | Set URLSerchParams to your page URL |
+| ***getFilters()*** | function | - | Get object with filters data - `{ filter-type: ['filter-value'] }` |
