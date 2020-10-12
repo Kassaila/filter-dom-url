@@ -84,7 +84,7 @@ var Filter = function () {
   _createClass(Filter, [{
     key: "init",
     value: function init() {
-      if (!_classPrivateMethodGet(this, _checkDomElementAttr, _checkDomElementAttr2).call(this, this.formAttr) || !_classPrivateMethodGet(this, _checkDomElementAttr, _checkDomElementAttr2).call(this, this.filterAttr)) {
+      if (!_classPrivateMethodGet(this, _checkDomElementAttr, _checkDomElementAttr2).call(this, this.formAttr)) {
         throw new Error(_classPrivateFieldGet(this, _checkAttrErrorMessage));
       }
 
@@ -123,10 +123,24 @@ var Filter = function () {
       var tagName = $filter.tagName.toLowerCase();
       var filterDomType = null;
 
-      if (tagName === 'select') {
-        filterDomType = $filter.multiple ? 'select-multiple' : 'select-single';
-      } else if (tagName === 'input') {
-        filterDomType = $filter.type;
+      switch (tagName) {
+        case 'select':
+          {
+            filterDomType = $filter.multiple ? 'select-multiple' : 'select-single';
+            break;
+          }
+
+        case 'input':
+          {
+            filterDomType = $filter.type;
+            break;
+          }
+
+        default:
+          {
+            console.warn("DOM element tag name '".concat(tagName, "' is not yet supported."));
+            break;
+          }
       }
 
       return filterDomType;
@@ -137,7 +151,13 @@ var Filter = function () {
 }();
 
 var _checkDomElementAttr2 = function _checkDomElementAttr2(attr) {
-  return typeof attr === 'string' && document.querySelectorAll("[".concat(attr, "]")).length !== 0;
+  var isExists = typeof attr === 'string' && document.querySelectorAll("[".concat(attr, "]")).length !== 0;
+
+  if (!isExists) {
+    console.warn("DOM element [".concat(attr, "] - is not exists"));
+  }
+
+  return isExists;
 };
 
 var _parseFiltersFromUrl2 = function _parseFiltersFromUrl2(urlFilters) {
@@ -147,11 +167,8 @@ var _parseFiltersFromUrl2 = function _parseFiltersFromUrl2(urlFilters) {
 
   var objectFilters = {};
   if (filters.length === 0) return objectFilters;
-  filters.forEach(function (filter) {
-    var type = filter[0];
-    var VALUES = filter[1];
-    var isFilterExist = document.querySelector("[".concat(_this.filterAttr, "=\"").concat(type, "\"]"));
-    if (!isFilterExist) return;
+  new Map(filters).forEach(function (VALUES, type) {
+    if (!_classPrivateMethodGet(_this, _checkDomElementAttr, _checkDomElementAttr2).call(_this, "".concat(_this.filterAttr, "=\"").concat(type, "\""))) return;
     objectFilters[type] = VALUES.split(' ');
   });
   return objectFilters;
@@ -171,7 +188,6 @@ var _updateFiltersDomFromUrl2 = function _updateFiltersDomFromUrl2(urlFilters) {
   Object.keys(objectFilters).forEach(function (type) {
     var $filter = _this2.$form.querySelector("[".concat(_this2.filterAttr, "=\"").concat(type, "\"]"));
 
-    if (!$filter) return;
     var filterType = Filter.checkFilterDomType($filter);
 
     switch (filterType) {
@@ -183,13 +199,13 @@ var _updateFiltersDomFromUrl2 = function _updateFiltersDomFromUrl2(urlFilters) {
       case 'week':
       case 'time':
         {
-          _this2.$form.querySelector("[".concat(_this2.filterAttr, "=\"").concat(type, "\"]")).value = _toConsumableArray(objectFilters[type]);
+          $filter.value = _toConsumableArray(objectFilters[type]);
           break;
         }
 
       case 'select-multiple':
         {
-          var $selectOptions = _toConsumableArray(_this2.$form.querySelector("[".concat(_this2.filterAttr, "=\"").concat(type, "\"]")).options);
+          var $selectOptions = _toConsumableArray($filter.options);
 
           $selectOptions.forEach(function ($selectOption) {
             var $option = $selectOption;
@@ -217,7 +233,7 @@ var _updateFiltersDomFromUrl2 = function _updateFiltersDomFromUrl2(urlFilters) {
 
       default:
         {
-          console.warn("Type '".concat(filterType, "' is not yet supported."));
+          console.warn("DOM element type '".concat(filterType, "' is not yet supported."));
           break;
         }
     }
@@ -283,7 +299,7 @@ var _updateUrlFromFiltersDom2 = function _updateUrlFromFiltersDom2(e) {
 
     default:
       {
-        console.warn("Type '".concat(filterType, "' is not yet supported."));
+        console.warn("DOM element Type '".concat(filterType, "' is not yet supported."));
         break;
       }
   }

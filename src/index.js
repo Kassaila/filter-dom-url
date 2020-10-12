@@ -25,7 +25,7 @@ class Filter {
    * Check filter DOM type
    * @public
    * @param {object} $filter - DOM element
-   * @returns {string} - filter DOM type
+   * @returns {null | string} - filter DOM type
    * @example
    * Filter.checkFilterDomType(document.querySelector('[data-filter="example"]'));
    */
@@ -33,10 +33,19 @@ class Filter {
     const tagName = $filter.tagName.toLowerCase();
     let filterDomType = null;
 
-    if (tagName === 'select') {
-      filterDomType = $filter.multiple ? 'select-multiple' : 'select-single';
-    } else if (tagName === 'input') {
-      filterDomType = $filter.type;
+    switch (tagName) {
+      case 'select': {
+        filterDomType = $filter.multiple ? 'select-multiple' : 'select-single';
+        break;
+      }
+      case 'input': {
+        filterDomType = $filter.type;
+        break;
+      }
+      default: {
+        console.warn(`DOM element tag name '${tagName}' is not yet supported.`);
+        break;
+      }
     }
 
     return filterDomType;
@@ -51,7 +60,13 @@ class Filter {
      * #checkDomElementAttr('data-filter');
      */
   #checkDomElementAttr (attr) {
-    return typeof attr === 'string' && document.querySelectorAll(`[${attr}]`).length !== 0;
+    const isExists = typeof attr === 'string' && document.querySelectorAll(`[${attr}]`).length !== 0;
+
+    if (!isExists) {
+      console.warn(`DOM element [${attr}] - is not exists`);
+    }
+
+    return isExists;
   }
 
   /**
@@ -68,12 +83,8 @@ class Filter {
 
     if (filters.length === 0) return objectFilters;
 
-    filters.forEach((filter) => {
-      const type = filter[0];
-      const VALUES = filter[1];
-      const isFilterExist = document.querySelector(`[${this.filterAttr}="${type}"]`);
-
-      if (!isFilterExist) return;
+    new Map(filters).forEach((VALUES, type) => {
+      if (!this.#checkDomElementAttr(`${this.filterAttr}="${type}"`)) return;
 
       objectFilters[type] = VALUES.split(' ');
     });
@@ -103,8 +114,6 @@ class Filter {
     Object.keys(objectFilters).forEach((type) => {
       const $filter = this.$form.querySelector(`[${this.filterAttr}="${type}"]`);
 
-      if (!$filter) return;
-
       const filterType = Filter.checkFilterDomType($filter);
 
       switch (filterType) {
@@ -115,11 +124,11 @@ class Filter {
         case 'month':
         case 'week':
         case 'time': {
-          this.$form.querySelector(`[${this.filterAttr}="${type}"]`).value = [...objectFilters[type]];
+          $filter.value = [...objectFilters[type]];
           break;
         }
         case 'select-multiple': {
-          const $selectOptions = [...this.$form.querySelector(`[${this.filterAttr}="${type}"]`).options];
+          const $selectOptions = [...$filter.options];
 
           $selectOptions.forEach(($selectOption) => {
             const $option = $selectOption;
@@ -145,7 +154,7 @@ class Filter {
           break;
         }
         default: {
-          console.warn(`Type '${filterType}' is not yet supported.`);
+          console.warn(`DOM element type '${filterType}' is not yet supported.`);
           break;
         }
       }
@@ -208,7 +217,7 @@ class Filter {
         break;
       }
       default: {
-        console.warn(`Type '${filterType}' is not yet supported.`);
+        console.warn(`DOM element Type '${filterType}' is not yet supported.`);
         break;
       }
     }
@@ -274,8 +283,7 @@ class Filter {
   * @public
   */
   init() {
-    if (!this.#checkDomElementAttr(this.formAttr)
-      || !this.#checkDomElementAttr(this.filterAttr)) {
+    if (!this.#checkDomElementAttr(this.formAttr)) {
       throw new Error(this.#checkAttrErrorMessage);
     }
 
