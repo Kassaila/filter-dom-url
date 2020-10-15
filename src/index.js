@@ -217,7 +217,7 @@ class Filter {
         break;
       }
       default: {
-        console.warn(`DOM element Type '${filterType}' is not yet supported.`);
+        console.warn(`DOM element type '${filterType}' is not yet supported.`);
         break;
       }
     }
