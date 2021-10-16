@@ -299,7 +299,7 @@ var _updateUrlFromFiltersDom2 = function _updateUrlFromFiltersDom2(e) {
 
     default:
       {
-        console.warn("DOM element Type '".concat(filterType, "' is not yet supported."));
+        console.warn("DOM element type '".concat(filterType, "' is not yet supported."));
         break;
       }
   }
