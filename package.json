@@ -72,11 +72,14 @@
     "release:publish": "npm run release:check && npm publish",
     "release:publish:beta": "npm run release:check && npm publish --tag beta",
     "prepare": "husky",
-    "prepublishOnly": "npm run check:types && npm run test:run"
+    "prepublishOnly": "npm run check:types && npm run test:run",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "lint-staged": {
     "*.{ts,js}": "eslint --fix",
-    "*.{ts,js,json,md,css}": "prettier --write"
+    "*.{ts,js,json,md,vue,css}": "prettier --write"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
@@ -97,6 +100,8 @@
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.2",
-    "vitest": "^4.1.2"
+    "vitepress": "^1.6.4",
+    "vitest": "^4.1.2",
+    "vue": "^3.5.34"
   }
 }

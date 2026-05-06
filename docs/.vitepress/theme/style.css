@@ -1,0 +1,88 @@
+:root {
+  --vp-c-brand-1: var(--vp-c-indigo-1);
+  --vp-c-brand-2: var(--vp-c-indigo-2);
+  --vp-c-brand-3: var(--vp-c-indigo-3);
+  --vp-c-brand-soft: var(--vp-c-indigo-soft);
+}
+
+.filter-demo {
+  display: grid;
+  gap: 1.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background: var(--vp-c-bg-soft);
+}
+
+.filter-demo__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.filter-demo__group {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.filter-demo__group p {
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--vp-c-text-2);
+}
+
+.filter-demo__group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.filter-demo__group select,
+.filter-demo__group input[type='color'],
+.filter-demo__group input[type='range'],
+.filter-demo__group input[type='date'],
+.filter-demo__group input[type='month'],
+.filter-demo__group input[type='week'],
+.filter-demo__group input[type='time'] {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--vp-c-border);
+  border-radius: 4px;
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  font: inherit;
+}
+
+.filter-demo__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-demo__actions button {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--vp-c-brand-1);
+  border-radius: 6px;
+  background: var(--vp-c-brand-1);
+  color: white;
+  font: inherit;
+  cursor: pointer;
+}
+
+.filter-demo__actions button[type='reset'] {
+  background: transparent;
+  color: var(--vp-c-brand-1);
+}
+
+.filter-demo__state {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  background: var(--vp-c-bg-alt);
+  border-radius: 6px;
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+}

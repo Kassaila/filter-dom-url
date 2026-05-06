@@ -33,8 +33,13 @@ npm i
 | `npm run check:all`       | format + lint + types + tests + build + size            |
 | `npm run release:check`   | `check:all` + `npm pack --dry-run`                      |
 | `npm run release:publish` | Publish to npm                                          |
+| `npm run docs:dev`        | VitePress dev server (`docs/`)                          |
+| `npm run docs:build`      | Build the static docs site to `docs/.vitepress/dist`    |
+| `npm run docs:preview`    | Preview the built docs site locally                     |
 
-## Examples folder
+## Documentation
 
-`examples/` is a standalone demo project with its own gulp setup (legacy). Not part of the library
-build.
+Docs live in `docs/` and are built with VitePress. The interactive demo at `/examples/live-demo`
+imports `Filter` directly from `src/index.ts`, so it doubles as a manual regression check during
+development. The site is auto-deployed to GitHub Pages on push to `master` via
+`.github/workflows/docs.yml`.

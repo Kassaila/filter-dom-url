@@ -3,15 +3,7 @@ import tseslint from 'typescript-eslint';
 
 export default [
   {
-    ignores: [
-      'dist/**',
-      'coverage/**',
-      'examples/**',
-      'docs/**',
-      '.tmp/**',
-      '*.config.*',
-      '.size-limit.cjs',
-    ],
+    ignores: ['dist/**', 'coverage/**', 'docs/**', '.tmp/**', '*.config.*', '.size-limit.cjs'],
   },
 
   ...tsConfig,

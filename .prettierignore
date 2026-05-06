@@ -2,8 +2,8 @@ dist
 coverage
 node_modules
 .tmp
-examples
-docs
+docs/.vitepress/dist
+docs/.vitepress/cache
 CODE_OF_CONDUCT.md
 CONTRIBUTING.md
 LICENSE

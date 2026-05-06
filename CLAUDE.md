@@ -13,6 +13,8 @@ library that keeps DOM filter controls (`<input>`, `<select>`) in sync with `URL
 - `npm run check:types` — `tsc --noEmit`.
 - `npm run check:size` — size-limit (4 KB budget per format).
 - `npm run check:all` — full CI gate: format + lint + types + tests + build + size.
+- `npm run docs:dev` / `docs:build` / `docs:preview` — VitePress dev server / static build / preview
+  of the built site.
 
 Single test: `npx vitest run __tests__/index.test.ts -t "<name>"`.
 
@@ -68,7 +70,21 @@ helpers reuse `window.location.origin` to avoid this.
 - Conventional Commits, enforced by `.husky/commit-msg`. `.husky/pre-commit` runs `lint-staged`.
 - DOM nodes use `$`-prefixed names (`$form`, `$filter`).
 
-## Out of scope
+## Documentation site
 
-`examples/` is a separate demo project with its own legacy gulp setup. Not part of the library build
-— leave it alone unless explicitly asked.
+The docs live in `docs/` and are built with **VitePress 1.x**. Layout follows the sibling
+`vue-router-citadel` project — `docs/.vitepress/{config.ts,theme/}` plus content under
+`docs/{guide,api,examples}/`.
+
+- The interactive demo is `docs/.vitepress/theme/components/FilterDemo.vue`. It imports `Filter`
+  from `../../../../src/index` (the live source) — keep this path stable, it is what makes the demo
+  a manual regression check.
+- The component must stay SSR-safe: `Filter` touches `document` and `window` in its constructor, so
+  instantiation lives inside `onMounted`, and the demo is wrapped in `<ClientOnly>` on the page.
+- `docs/.vitepress/{dist,cache}` are build artifacts (gitignored, prettier-ignored).
+- The `lint:check` ignore list still excludes `docs/**`. The TypeScript files under
+  `docs/.vitepress/` are not part of the library `tsconfig.json` — VitePress runs its own type
+  resolution via Vite.
+
+Deploy: `.github/workflows/docs.yml` builds and publishes `docs/.vitepress/dist/` to GitHub Pages on
+push to `master`.
