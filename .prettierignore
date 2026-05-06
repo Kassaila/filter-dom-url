@@ -1,0 +1,9 @@
+dist
+coverage
+node_modules
+.tmp
+examples
+docs
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+LICENSE

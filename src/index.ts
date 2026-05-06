@@ -1,49 +1,63 @@
-/** Class representing a Filter */
-class Filter {
-  // Error message
+export interface FilterOptions {
+  filterAttr: string;
+  formAttr: string;
+}
+
+export type SupportedFilterDomType =
+  | 'select-single'
+  | 'select-multiple'
+  | 'checkbox'
+  | 'radio'
+  | 'color'
+  | 'range'
+  | 'date'
+  | 'month'
+  | 'week'
+  | 'time';
+
+export type FilterDomType = SupportedFilterDomType | (string & {});
+
+export type FiltersMap = Record<string, string[]>;
+
+export class Filter {
+  readonly filterAttr: string;
+  readonly formAttr: string;
+  private $form: HTMLFormElement | null;
+  private url: URL;
+  private urlFilters: URLSearchParams;
+
   #checkAttrErrorMessage = `Filter initializing error.
   Please enter correct attribute for DOM element`;
 
-  /**
-     * Create the Filter instance
-     * @param {object} options - identification attributes
-     * @param {string} options.filterAttr - filters identification attribute
-     * @param {string} options.formAttr - filters form identification attribute
-     */
-  constructor(options) {
+  constructor(options: FilterOptions) {
     this.filterAttr = options.filterAttr;
     this.formAttr = options.formAttr;
 
-    this.$form = document.querySelector(`[${this.formAttr}]`);
+    this.$form = document.querySelector<HTMLFormElement>(`[${this.formAttr}]`);
     this.url = new URL(window.location.href);
-    this.urlFilters = new URLSearchParams(
-      decodeURIComponent(this.url.searchParams),
-    );
+    this.urlFilters = new URLSearchParams(decodeURIComponent(this.url.searchParams.toString()));
   }
 
-  /**
-   * Check filter DOM type
-   * @public
-   * @param {object} $filter - DOM element
-   * @returns {null | string} - filter DOM type
-   * @example
-   * Filter.checkFilterDomType(document.querySelector('[data-filter="example"]'));
-   */
-  static checkFilterDomType($filter) {
+  static checkFilterDomType($filter: Element): FilterDomType | null {
     const tagName = $filter.tagName.toLowerCase();
-    let filterDomType = null;
+    let filterDomType: FilterDomType | null = null;
 
     switch (tagName) {
       case 'select': {
-        filterDomType = $filter.multiple ? 'select-multiple' : 'select-single';
+        filterDomType = ($filter as HTMLSelectElement).multiple
+          ? 'select-multiple'
+          : 'select-single';
+
         break;
       }
       case 'input': {
-        filterDomType = $filter.type;
+        filterDomType = ($filter as HTMLInputElement).type;
+
         break;
       }
       default: {
         console.warn(`DOM element tag name '${tagName}' is not yet supported.`);
+
         break;
       }
     }
@@ -51,16 +65,9 @@ class Filter {
     return filterDomType;
   }
 
-  /**
-     * Check attribute and DOM element
-     * @private
-     * @param {string} attr - DOM element attribute
-     * @returns {boolean}
-     * @example
-     * #checkDomElementAttr('data-filter');
-     */
-  #checkDomElementAttr (attr) {
-    const isExists = typeof attr === 'string' && document.querySelectorAll(`[${attr}]`).length !== 0;
+  #checkDomElementAttr(attr: string): boolean {
+    const isExists =
+      typeof attr === 'string' && document.querySelectorAll(`[${attr}]`).length !== 0;
 
     if (!isExists) {
       console.warn(`DOM element [${attr}] - is not exists`);
@@ -69,22 +76,18 @@ class Filter {
     return isExists;
   }
 
-  /**
-   * Parse URLSearchParam
-   * @private
-   * @param {object} urlFilters - URLSearchParam prototype
-   * @returns {object} - {
-   *  filter-type: ['filter-value'],
-   * }
-   */
-  #parseFiltersFromUrl (urlFilters) {
+  #parseFiltersFromUrl(urlFilters: URLSearchParams): FiltersMap {
     const filters = [...urlFilters.entries()];
-    const objectFilters = {};
+    const objectFilters: FiltersMap = {};
 
-    if (filters.length === 0) return objectFilters;
+    if (filters.length === 0) {
+      return objectFilters;
+    }
 
     new Map(filters).forEach((VALUES, type) => {
-      if (!this.#checkDomElementAttr(`${this.filterAttr}="${type}"`)) return;
+      if (!this.#checkDomElementAttr(`${this.filterAttr}="${type}"`)) {
+        return;
+      }
 
       objectFilters[type] = VALUES.split(' ');
     });
@@ -92,27 +95,30 @@ class Filter {
     return objectFilters;
   }
 
-  /**
-   * Update url & urlFilters
-   * @private
-   */
-  #updateUrl () {
+  #updateUrl(): void {
     this.url = new URL(window.location.href);
     this.urlFilters = new URLSearchParams(this.url.searchParams);
   }
 
-  /**
-   * Update DOM elements from url
-   * @private
-   * @param {object} urlFilters - URLSearchParam prototype
-   */
-  #updateFiltersDomFromUrl (urlFilters) {
+  #updateFiltersDomFromUrl(urlFilters: URLSearchParams): void {
     const objectFilters = this.#parseFiltersFromUrl(urlFilters);
 
-    if (Object.keys(objectFilters).length === 0) return;
+    if (Object.keys(objectFilters).length === 0) {
+      return;
+    }
+
+    const $form = this.$form;
+
+    if (!$form) {
+      return;
+    }
 
     Object.keys(objectFilters).forEach((type) => {
-      const $filter = this.$form.querySelector(`[${this.filterAttr}="${type}"]`);
+      const $filter = $form.querySelector(`[${this.filterAttr}="${type}"]`);
+
+      if (!$filter) {
+        return;
+      }
 
       const filterType = Filter.checkFilterDomType($filter);
 
@@ -124,11 +130,12 @@ class Filter {
         case 'month':
         case 'week':
         case 'time': {
-          $filter.value = [...objectFilters[type]];
+          ($filter as HTMLInputElement | HTMLSelectElement).value = objectFilters[type][0];
+
           break;
         }
         case 'select-multiple': {
-          const $selectOptions = [...$filter.options];
+          const $selectOptions = [...($filter as HTMLSelectElement).options];
 
           $selectOptions.forEach(($selectOption) => {
             const $option = $selectOption;
@@ -137,38 +144,50 @@ class Filter {
               $option.selected = true;
             }
           });
+
           break;
         }
         case 'radio': {
-          this.$form.querySelector(
-            `[${this.filterAttr}="${type}"][value="${[...objectFilters[type]]}"]`,
-          ).checked = true;
+          const radio = $form.querySelector<HTMLInputElement>(
+            `[${this.filterAttr}="${type}"][value="${objectFilters[type][0]}"]`,
+          );
+
+          if (radio) {
+            radio.checked = true;
+          }
+
           break;
         }
         case 'checkbox': {
           objectFilters[type].forEach((value) => {
-            this.$form.querySelector(
+            const cb = $form.querySelector<HTMLInputElement>(
               `[${this.filterAttr}="${type}"][value="${value}"]`,
-            ).checked = true;
+            );
+
+            if (cb) {
+              cb.checked = true;
+            }
           });
+
           break;
         }
         default: {
           console.warn(`DOM element type '${filterType}' is not yet supported.`);
+
           break;
         }
       }
     });
   }
 
-  /**
-   * Update url from DOM elements
-   * @private
-   * @param {object} e - DOM element event
-   */
-  #updateUrlFromFiltersDom (e) {
-    const $filter = e.target;
+  #updateUrlFromFiltersDom(e: Event): void {
+    const $filter = e.target as HTMLInputElement | HTMLSelectElement;
     const filterName = $filter.getAttribute(`${this.filterAttr}`);
+
+    if (filterName === null) {
+      return;
+    }
+
     const filterType = Filter.checkFilterDomType($filter);
 
     switch (filterType) {
@@ -185,64 +204,57 @@ class Filter {
         } else {
           this.urlFilters.delete(filterName);
         }
+
         break;
       }
       case 'select-multiple': {
-        const filterValues = [...$filter.options]
+        const filterValues = [...($filter as HTMLSelectElement).options]
           .filter((option) => option.selected)
           .map((option) => option.value);
 
         this.urlFilters.set(filterName, filterValues.join(' '));
+
         break;
       }
       case 'checkbox': {
+        const cb = $filter as HTMLInputElement;
         const filterParams = `${this.urlFilters.get(filterName)}`.split(' ');
 
         if (this.urlFilters.has(filterName)) {
-          if ($filter.checked) {
-            this.urlFilters.set(
-              filterName,
-              `${this.urlFilters.get(filterName)} ${$filter.value}`,
-            );
+          if (cb.checked) {
+            this.urlFilters.set(filterName, `${this.urlFilters.get(filterName)} ${cb.value}`);
           } else if (filterParams.length > 1) {
             this.urlFilters.delete(filterName);
-            filterParams.splice(filterParams.indexOf($filter.value), 1);
+            filterParams.splice(filterParams.indexOf(cb.value), 1);
             this.urlFilters.set(filterName, filterParams.join(' '));
           } else {
             this.urlFilters.delete(filterName);
           }
         } else {
-          this.urlFilters.append(filterName, $filter.value);
+          this.urlFilters.append(filterName, cb.value);
         }
+
         break;
       }
       default: {
         console.warn(`DOM element type '${filterType}' is not yet supported.`);
+
         break;
       }
     }
   }
 
-  /**
-   * Set filters to window.location URL & update history
-   * @private
-   * @param {object} newUrl - URL prototype
-   * @param {object} setUrlFilters - URLSearchParams prototype
-   */
-  #setFiltersToUrl (newUrl, setUrlFilters) {
+  #setFiltersToUrl(newUrl: URL, setUrlFilters: URLSearchParams): void {
     const updatableUrl = new URL(newUrl);
 
-    updatableUrl.search = setUrlFilters;
-    window.history.pushState(null, null, updatableUrl);
+    updatableUrl.search = setUrlFilters.toString();
+
+    window.history.pushState(null, '', updatableUrl);
 
     this.#updateUrl();
   }
 
-  /**
-  * Reset url & window.location URL
-  * @private
-  */
-  #resetUrl () {
+  #resetUrl(): void {
     Object.keys(this.#parseFiltersFromUrl(this.urlFilters)).forEach((filter) => {
       this.urlFilters.delete(filter);
     });
@@ -250,19 +262,15 @@ class Filter {
     this.#setFiltersToUrl(this.url, this.urlFilters);
   }
 
-  /**
-  * Reset DOM elements
-  * @private
-  */
-  #resetDom () {
-    this.$form.reset();
+  #resetDom(): void {
+    this.$form?.reset();
   }
 
-  /**
-  * Event listeners
-  * @private
-  */
-  #eventListeners () {
+  #eventListeners(): void {
+    if (!this.$form) {
+      return;
+    }
+
     this.$form.querySelectorAll(`[${this.filterAttr}]`).forEach(($filter) => {
       $filter.addEventListener('change', (e) => {
         this.#updateUrlFromFiltersDom(e);
@@ -278,11 +286,7 @@ class Filter {
     });
   }
 
-  /**
-  * Instance initialization
-  * @public
-  */
-  init() {
+  init(): void {
     if (!this.#checkDomElementAttr(this.formAttr)) {
       throw new Error(this.#checkAttrErrorMessage);
     }
@@ -292,47 +296,23 @@ class Filter {
     this.#eventListeners();
   }
 
-  /**
-  * Update DOM elements filters
-  * @public
-  */
-  updateDom() {
+  updateDom(): void {
     this.#updateFiltersDomFromUrl(this.urlFilters);
   }
 
-  /**
-  * Reset url & window.location URL
-  * @public
-  */
-  resetUrl() {
+  resetUrl(): void {
     this.#resetUrl();
   }
 
-  /**
-  * Reset DOM elements filters
-  * @public
-  */
-  resetDom() {
+  resetDom(): void {
     this.#resetDom();
   }
 
-  /**
-  * Set URLSearchParams to window.location URL
-  * @public
-  * @param {object} newUrl - URL prototype
-  */
-  setFiltersToUrl(newUrl) {
+  setFiltersToUrl(newUrl: URL): void {
     this.#setFiltersToUrl(newUrl, this.urlFilters);
   }
 
-  /**
-  * Get filters types & values
-  * @public
-  * @returns {object} - {
-  *  filter-type: ['filter-value'],
-  * }
-  */
-  getFilters() {
+  getFilters(): FiltersMap {
     return this.#parseFiltersFromUrl(this.urlFilters);
   }
 }

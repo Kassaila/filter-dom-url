@@ -1,63 +1,40 @@
 # Setup
 
-Setup for develope and contribute.
+Setup for development and contribution.
 
-At `filter-dom-url` we use `npm` to execute commands.
+## Prerequisites
 
-Do: `npm i`, the setup will also install project for you.
+- Node.js `>=24`
+- npm
 
-That's all.
+## Install
 
-## Setup manually
-
-### Setup your local repository
-
-```bash
+```sh
 git clone https://github.com/Kassaila/filter-dom-url
 cd filter-dom-url
 npm i
 ```
 
-### To run the test
+## Common scripts
 
-```bash
-npm run test
-```
+| Script                    | What it does                                            |
+| ------------------------- | ------------------------------------------------------- |
+| `npm run build`           | Build `dist/` (ESM + CJS + types, minified, sourcemaps) |
+| `npm run build:dev`       | Build without minification                              |
+| `npm run test`            | Run vitest in watch mode                                |
+| `npm run test:run`        | Run vitest once                                         |
+| `npm run test:coverage`   | Run vitest with v8 coverage                             |
+| `npm run lint`            | ESLint (report only)                                    |
+| `npm run lint:fix`        | ESLint with `--fix`                                     |
+| `npm run format`          | Prettier write                                          |
+| `npm run format:check`    | Prettier check                                          |
+| `npm run check:types`     | `tsc --noEmit`                                          |
+| `npm run check:size`      | size-limit budget check                                 |
+| `npm run check:all`       | format + lint + types + tests + build + size            |
+| `npm run release:check`   | `check:all` + `npm pack --dry-run`                      |
+| `npm run release:publish` | Publish to npm                                          |
 
-### To run JS formatter (ESLint)
+## Examples folder
 
-```bash
-npm run fix-js
-```
-
-### To run develop
-
-```bash
-npm run dev
-```
-
-### To run build
-
-```bash
-npm run build
-```
-
-### To develop with examples
-
-- go to folder:
-
-```bash
-cd examples
-```
-
-- run develop:
-
-```bash
-npm run dev
-```
-
-### To update examples build
-
-```bash
-npm run build
-```
+`examples/` is a standalone demo project with its own gulp setup (legacy). Not part of the library
+build.

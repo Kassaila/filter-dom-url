@@ -1,7 +1,30 @@
 {
   "name": "@kassaila/filter-dom-url",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Filtering data with input, select & URL (URLSearchParams)",
+  "sideEffects": false,
+  "main": "./dist/filter-dom-url.js",
+  "module": "./dist/filter-dom-url.mjs",
+  "types": "./dist/filter-dom-url.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/filter-dom-url.d.mts",
+        "default": "./dist/filter-dom-url.mjs"
+      },
+      "require": {
+        "types": "./dist/filter-dom-url.d.ts",
+        "default": "./dist/filter-dom-url.js"
+      }
+    },
+    "./dist/filter-dom-url.js": "./dist/filter-dom-url.js",
+    "./dist/filter-dom-url.mjs": "./dist/filter-dom-url.mjs",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
   "keywords": [
     "filter",
     "input",
@@ -19,12 +42,6 @@
     "name": "Dmytro Symonov",
     "email": "kasela.kassaila@gmail.com"
   },
-  "main": "./dist/filter-dom-url.js",
-  "files": [
-    "dist",
-    "docs",
-    "src"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Kassaila/filter-dom-url.git"
@@ -33,36 +50,53 @@
     "access": "public",
     "registry": "https://npm.pkg.github.com/"
   },
-  "devDependencies": {
-    "@babel/core": "^7.12.0",
-    "@babel/eslint-parser": "^7.11.5",
-    "@babel/eslint-plugin": "^7.11.5",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
-    "@babel/plugin-proposal-private-methods": "^7.10.4",
-    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "@babel/plugin-transform-runtime": "^7.12.0",
-    "@babel/preset-env": "^7.12.0",
-    "@babel/runtime": "^7.12.0",
-    "babel-preset-minify": "^0.5.1",
-    "del": "^6.0.0",
-    "eslint": "^7.11.0",
-    "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-plugin-import": "^2.22.1",
-    "gulp": "^4.0.2",
-    "gulp-babel": "^8.0.0-beta.2",
-    "gulp-rename": "^2.0.0",
-    "node-notifier": "^8.0.0"
-  },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=24.0.0"
   },
   "scripts": {
-    "dev": "npx gulp",
-    "test": "npx gulp build --log-level -LLLL",
-    "build": "npx gulp build",
-    "lint-js": "npx gulp lint-js",
-    "fix-js": "npx gulp fix-js"
+    "build": "tsup",
+    "build:dev": "NODE_ENV=development tsup --no-minify --sourcemap",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:lint": "eslint",
+    "check:types": "tsc --noEmit",
+    "check:format": "npm run format:check",
+    "check:size": "size-limit",
+    "check:all": "npm run check:format && npm run check:lint && npm run check:types && npm run test:run && npm run build && npm run check:size",
+    "release:check": "npm run check:all && npm pack --dry-run",
+    "release:publish": "npm run release:check && npm publish",
+    "release:publish:beta": "npm run release:check && npm publish --tag beta",
+    "prepare": "husky",
+    "prepublishOnly": "npm run check:types && npm run test:run"
   },
-  "dependencies": {}
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix",
+    "*.{ts,js,json,md,css}": "prettier --write"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@eslint/js": "^10.0.1",
+    "@size-limit/preset-small-lib": "^12.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "@vitest/coverage-v8": "^4.1.2",
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import-x": "^4.16.2",
+    "eslint-plugin-kassaila": "^0.2.0",
+    "happy-dom": "^20.8.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.1",
+    "size-limit": "^12.0.1",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.2",
+    "vitest": "^4.1.2"
+  }
 }

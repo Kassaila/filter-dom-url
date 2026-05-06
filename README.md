@@ -1,74 +1,72 @@
-# Filtering data with < input >, < select > & URLSearchParams
+# Filtering data with `<input>`, `<select>` & URLSearchParams
 
-Make easy way for filtering data with URLSearchParams & different types of inputs, selects.
+Tiny TypeScript library that keeps DOM filter controls (`<input>`, `<select>`) in sync with
+`URLSearchParams` and `history`.
 
 [![npm](https://img.shields.io/npm/v/@kassaila/filter-dom-url.svg)](https://www.npmjs.com/package/@kassaila/filter-dom-url)
-
 [![release](https://img.shields.io/github/release/kassaila/filter-dom-url.svg)](/releases)
 [![license](http://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![requests](http://img.shields.io/badge/PRs-welcome-green.svg)](/pulls)
 
-[![Build Status](https://travis-ci.org/Kassaila/filter-dom-url.svg?branch=master)](https://travis-ci.org/Kassaila/filter-dom-url)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Kassaila_filter-dom-url&metric=alert_status)](https://sonarcloud.io/dashboard?id=Kassaila_filter-dom-url)
+## Demo
 
-## Example
+A simple [demo](https://kassaila.github.io/filter-dom-url/) of usage. See the example sources:
+[HTML](https://github.com/Kassaila/filter-dom-url/blob/master/docs/index.html),
+[JS](https://github.com/Kassaila/filter-dom-url/blob/master/examples/src/js/app.js).
 
-A simple [demo](https://kassaila.github.io/filter-dom-url/) of usage `filter-dom-url`
+## Supported DOM elements
 
-See the code of an example - [HTML](https://github.com/Kassaila/filter-dom-url/blob/master/docs/index.html), [JS](https://github.com/Kassaila/filter-dom-url/blob/master/examples/src/js/app.js)
+For `<input>`: `type` ∈ `checkbox | radio | color | range | date | month | week | time`.
 
-## Overview
+For `<select>`: both `<select>` and `<select multiple>`.
 
-### Supported DOM elements types
+## HTML structure
 
-For tag `input`:
+Minimal markup:
 
-`<input type="...">` - `['checkbox', 'radio', 'color', 'range', 'date', 'month', 'week', 'time']`
-
-For tag `select`:
-
-`<select>` & `<select multiple>`
-
-### HTML structure
-
-Minimal structure for `filter-dom-url` initializing:
-
-```
+```html
 <form data-filter-form="form-example">
-  <input value="value-example" data-filter="type-example" type="checkbox">
+  <input value="value-example" data-filter="type-example" type="checkbox" />
 </form>
 ```
 
-### Install
+## Install
 
-Install package from [npm](https://www.npmjs.com/package/@kassaila/filter-dom-url) and import:
-
+```sh
+npm i @kassaila/filter-dom-url
 ```
+
+## Usage
+
+ESM (recommended):
+
+```ts
 import Filter from '@kassaila/filter-dom-url';
-```
 
-or copy [file](https://github.com/Kassaila/filter-dom-url/blob/master/dist/filter-dom-url.js) or [file.min](https://github.com/Kassaila/filter-dom-url/blob/master/dist/filter-dom-url.min.js) to your project and import:
-
-```
-import Filter from 'dist/filter-dom-url';
-```
-
-### Usage
-
-Create `Filter` instance:
-
-```
-const filterExample = new Filter({
+const filter = new Filter({
   formAttr: 'data-filter-form="form-example"',
   filterAttr: 'data-filter',
 });
+filter.init();
 ```
+
+CommonJS:
+
+```js
+const { default: Filter } = require('@kassaila/filter-dom-url');
+```
+
+The package ships ESM (`dist/filter-dom-url.mjs`) and CJS (`dist/filter-dom-url.js`) entries with
+bundled TypeScript declarations. Both are minified and shipped with sourcemaps.
 
 ## API
 
-| Parameter | Type | Arguments | Description |
-| --- | --- | --- | --- |
-| ***init()*** | function | - | Instance initialization |
-| ***updateDom()*** | function | - | Update DOM elements (filters) from URL |
-| ***setFiltersToUrl(newUrl)*** | function | ***newUrl*** - object (URL prototype). Base page URL, you can set from window.location | Set URLSerchParams to your page URL |
-| ***getFilters()*** | function | - | Get object with filters data - `{ filter-type: ['filter-value'] }` |
+| Method                           | Description                                                        |
+| -------------------------------- | ------------------------------------------------------------------ |
+| `init()`                         | Initialize the instance — apply URL state to DOM, attach listeners |
+| `updateDom()`                    | Re-apply current URL state to DOM elements                         |
+| `setFiltersToUrl(newUrl)`        | Push current filter state to `window.history` (URL prototype)      |
+| `resetUrl()`                     | Remove all known filter params from the URL                        |
+| `resetDom()`                     | Reset the form (`form.reset()`)                                    |
+| `getFilters()`                   | Get current filters as `{ [type]: string[] }`                      |
+| `Filter.checkFilterDomType($el)` | Static — classify a DOM element to its filter type                 |
