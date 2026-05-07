@@ -2,14 +2,15 @@
 title: Live Demo
 description:
   Working in-browser demo of @kassaila/filter-dom-url covering every supported input type. Toggle
-  controls and watch the URL change in real time.
+  controls, click Apply to commit the current selection to the URL.
 ---
 
 # Live Demo
 
-Below is a real `Filter` instance, mounted on this page. The form covers every supported control
-type. Open your browser's URL bar and watch it react as you toggle controls — every change is a real
-`history.pushState`, so **Back / Forward** rewinds the filter state.
+Below is a real `Filter` instance mounted on this page. Toggle the controls, then click **Apply** to
+push the current selection to the URL — that's the only step that updates `location.search`.
+**Reset** clears both the form and the URL params. **Back / Forward** rewinds through the committed
+states.
 
 <ClientOnly>
   <FilterDemo />

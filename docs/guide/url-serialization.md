@@ -38,6 +38,29 @@ yourself, split on space — not on `,` or repeated keys.
 
 :::
 
+### Toggle transitions
+
+How three checkboxes (`news`, `blog`, `docs`) collapse into a single `topic` param:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Empty
+    Empty: ?topic= (param removed)
+    News: ?topic=news
+    NewsBlog: ?topic=news+blog
+    All: ?topic=news+blog+docs
+
+    Empty --> News: check news
+    News --> NewsBlog: check blog
+    NewsBlog --> All: check docs
+    All --> NewsBlog: uncheck docs
+    NewsBlog --> News: uncheck blog
+    News --> Empty: uncheck news
+```
+
+When the last value is removed, the param itself is dropped from the URL — there is no `?topic=`
+sitting empty.
+
 ## `getFilters()` shape
 
 `filter.getFilters()` parses the current URL into a normalized object:
@@ -55,12 +78,14 @@ Single-value filters still come back as a one-item array.
 ## History integration
 
 - `setFiltersToUrl(newUrl)` calls `window.history.pushState(null, '', updatableUrl)` with the
-  current `URLSearchParams`. This is what creates a new history entry.
+  internal `URLSearchParams`. This is what creates a new history entry — typically wired to an Apply
+  button.
+- `resetUrl()` is a one-shot pushState that clears every known filter param.
 - A `popstate` listener (added in `init()`) reacts to **Back / Forward** by calling `form.reset()`
   and re-applying the URL filters to the DOM.
 
-This means every navigation step the user takes through filter combinations is a real history entry
-— predictable Back behavior, shareable URLs.
+Each Apply click is one history entry. Shareable URLs and predictable Back/Forward behavior fall out
+of that for free.
 
 ## Why space-joined and not repeated keys?
 

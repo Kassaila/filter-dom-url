@@ -1,12 +1,12 @@
 ---
 title: Supported Elements
 description:
-  The nine DOM control types @kassaila/filter-dom-url recognizes, with markup snippets for each.
+  The nine form control types @kassaila/filter-dom-url recognizes, with markup snippets for each.
 ---
 
 # Supported Elements
 
-The library recognizes the following DOM controls. Anything else inside the form is ignored.
+The library recognizes the following form controls. Anything else inside the form is ignored.
 
 | Tag                       | Normalized type   |
 | ------------------------- | ----------------- |

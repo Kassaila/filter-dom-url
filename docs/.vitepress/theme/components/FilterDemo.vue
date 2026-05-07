@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
 import Filter from '../../../../src/index';
 
@@ -7,6 +7,8 @@ const $form = ref<HTMLFormElement | null>(null);
 const search = ref('');
 const filters = ref<Record<string, string[]>>({});
 let filter: Filter | null = null;
+
+const hasFilters = computed(() => Object.keys(filters.value).length > 0 || search.value.length > 0);
 
 const refresh = (): void => {
   search.value = window.location.search;
@@ -27,6 +29,7 @@ const handleApply = (): void => {
 };
 
 const handleReset = (): void => {
+  filter?.resetDom();
   filter?.resetUrl();
   refresh();
 };
@@ -132,8 +135,8 @@ onBeforeUnmount(() => {
     </div>
 
     <div class="filter-demo__actions">
-      <button type="reset" @click="handleReset">Reset</button>
-      <button type="button" @click="handleApply">Apply</button>
+      <button type="reset" :disabled="!hasFilters" @click="handleReset">Reset</button>
+      <button type="button" :disabled="!hasFilters" @click="handleApply">Apply</button>
     </div>
 
     <pre class="filter-demo__state"><strong>location.search:</strong> {{ search || '(empty)' }}

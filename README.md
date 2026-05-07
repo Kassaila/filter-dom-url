@@ -1,22 +1,47 @@
-# @kassaila/filter-dom-url
+# 🔗 filter-dom-url
 
-Tiny TypeScript library that keeps DOM filter controls (`<input>`, `<select>`) in sync with
-`URLSearchParams` and `window.history`.
+> _Form state, mirrored to the URL. And back, when the user hits Back._
 
-[![npm](https://img.shields.io/npm/v/@kassaila/filter-dom-url.svg)](https://www.npmjs.com/package/@kassaila/filter-dom-url)
-[![release](https://img.shields.io/github/release/kassaila/filter-dom-url.svg)](https://github.com/Kassaila/filter-dom-url/releases)
-[![license](http://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![requests](http://img.shields.io/badge/PRs-welcome-green.svg)](https://github.com/Kassaila/filter-dom-url/pulls)
+[![npm version](https://img.shields.io/npm/v/@kassaila/filter-dom-url.svg)](https://www.npmjs.com/package/@kassaila/filter-dom-url)
+[![minzipped size](https://img.shields.io/bundlephobia/minzip/@kassaila/filter-dom-url)](https://bundlephobia.com/package/@kassaila/filter-dom-url)
+[![license](https://img.shields.io/npm/l/@kassaila/filter-dom-url.svg)](https://github.com/Kassaila/filter-dom-url/blob/master/LICENSE)
+[![docs](https://img.shields.io/badge/docs-VitePress-blue)](https://kassaila.github.io/filter-dom-url/)
 
-📖 **Documentation & live demo:** <https://kassaila.github.io/filter-dom-url/>
+**Tiny browser library that keeps form filter controls in sync with `URLSearchParams` and
+`window.history`.**
 
-## Install
+filter-dom-url turns a plain `<form>` into a **shareable, navigable, persistable filter UI** —
+without a state library, without a router, without a framework.
 
-```sh
-npm i @kassaila/filter-dom-url
+Form changes write to the URL via `history.pushState`. URL changes — including `popstate` from
+**Back / Forward** — replay back into the form. The `<form>` and `location.search` become two views
+of the same state.
+
+    📋 Form  ⇄  🔗 URLSearchParams  ⇄  🕓 history
+
+## ✨ Features
+
+- 🗜️ **Tiny & zero-dep** — single TypeScript file, **< 1.5 KB min+brotli**. No runtime dependencies.
+- 🔄 **Two-way sync** — DOM `change` writes to the URL; `popstate` replays URL state back into the
+  form.
+- 🧩 **Input types** — `select`, `select multiple`, and `<input type="...">` for `checkbox`,
+  `radio`, `color`, `range`, `date`, `month`, `week`, `time`.
+- 🪶 **Vanilla DOM** — works with `<form>` element, no framework adapters required.
+- 📜 **Stable wire format** — multi-value filters serialized as space-joined strings under a single
+  param key, not repeated keys.
+- 🎯 **Apply / Reset** — explicit commit and clear actions for forms with deferred submission.
+- 📦 **ESM + CJS** — dual entries with bundled `.d.ts` / `.d.mts` declarations and sourcemaps.
+  `sideEffects: false`.
+- 🔒 **Type-safe** — full TypeScript types, named and default exports, static classifier for DOM
+  elements.
+
+## 📦 Installation
+
+```bash
+npm install @kassaila/filter-dom-url
 ```
 
-## Quick start
+## 🚀 Quick Start
 
 ```html
 <form data-filter-form="example">
@@ -28,6 +53,8 @@ npm i @kassaila/filter-dom-url
     <option value="latest">Latest</option>
     <option value="popular">Popular</option>
   </select>
+  <button type="reset" data-filter-reset>Reset</button>
+  <button type="button" data-filter-apply>Apply</button>
 </form>
 ```
 
@@ -40,40 +67,29 @@ const filter = new Filter({
 });
 
 filter.init();
+
+document.querySelector('[data-filter-apply]')?.addEventListener('click', () => {
+  filter.setFiltersToUrl(new URL(window.location.href));
+});
+
+document.querySelector('[data-filter-reset]')?.addEventListener('click', () => {
+  filter.resetUrl();
+});
 ```
 
-That's it. The form state is now mirrored to `?topic=news&sort=popular` — refreshing or sharing the
-URL restores it; **Back / Forward** rewinds through filter combinations.
+`Filter` tracks form changes in an internal `URLSearchParams`. **Apply** commits that state to
+`location.search` via `history.pushState` — that's what makes the URL shareable and **Back /
+Forward** rewind through committed states. **Reset** clears form + URL together.
 
-## Supported controls
+## 📖 Documentation
 
-`<select>`, `<select multiple>`, and `<input type="...">` for
-`checkbox | radio | color | range | date | month | week | time`.
+**[View full documentation](https://kassaila.github.io/filter-dom-url/)** — getting started,
+supported elements, URL serialization, API reference, and a live demo covering every input type.
 
-See the
-[Supported Elements guide](https://kassaila.github.io/filter-dom-url/guide/supported-elements) and
-the [Live Demo](https://kassaila.github.io/filter-dom-url/examples/live-demo) for a working form
-covering every type.
+## 🤝 Contributing
 
-## API
+Contributions are welcome! See **[CONTRIBUTING.md](./CONTRIBUTING.md)** for guidelines.
 
-| Method                           | Description                                                        |
-| -------------------------------- | ------------------------------------------------------------------ |
-| `init()`                         | Initialize the instance — apply URL state to DOM, attach listeners |
-| `updateDom()`                    | Re-apply current URL state to DOM elements                         |
-| `setFiltersToUrl(newUrl)`        | Push current filter state to `window.history`                      |
-| `resetUrl()`                     | Remove all known filter params from the URL                        |
-| `resetDom()`                     | Reset the form (`form.reset()`)                                    |
-| `getFilters()`                   | Get current filters as `{ [type]: string[] }`                      |
-| `Filter.checkFilterDomType($el)` | Static — classify a DOM element to its filter type                 |
+## 📄 License
 
-Full reference: <https://kassaila.github.io/filter-dom-url/api/>.
-
-## Packaging
-
-Ships ESM (`dist/filter-dom-url.mjs`) and CJS (`dist/filter-dom-url.js`) entries with bundled
-TypeScript declarations. Both are minified with sourcemaps. `sideEffects: false`.
-
-## License
-
-[MIT](LICENSE) © Kassaila
+MIT

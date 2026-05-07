@@ -47,7 +47,9 @@ Call `init()` after construction to bind listeners and apply the URL state to th
 
 - Verifies the form selector resolves to at least one element (throws otherwise).
 - Applies the current URL state to the form.
-- Registers `change` listeners on every `[filterAttr]` control inside the form.
+- Registers `change` listeners on every `[filterAttr]` control inside the form. These update the
+  internal `URLSearchParams` only — they do **not** push to the actual URL. Call `setFiltersToUrl`
+  to commit.
 - Registers a `popstate` listener that resets the form and re-applies URL state.
 
 ### `updateDom(): void`

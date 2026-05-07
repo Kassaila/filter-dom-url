@@ -1,14 +1,41 @@
 ---
-title: What & Why
+title: Introduction
 description:
   Overview of @kassaila/filter-dom-url — what it does, when to reach for it, and what it explicitly
   does not do.
 ---
 
-# What & Why
+# Introduction
 
-`@kassaila/filter-dom-url` is a tiny browser-only TypeScript library that keeps DOM filter controls
+`@kassaila/filter-dom-url` is a tiny browser-only TypeScript library that keeps form filter controls
 (`<input>`, `<select>`) in sync with `URLSearchParams` and `window.history`.
+
+## How it stays in sync
+
+Three pieces of state, with `URLSearchParams` in the middle as the single source of in-memory truth.
+
+```mermaid
+flowchart LR
+    DOM["DOM form<br/>filter inputs"]
+    SP{{"Internal<br/>URLSearchParams"}}
+    URL[("URL<br/>location.search")]
+
+    DOM -- "change event" --> SP
+    SP -- "updateDom()" --> DOM
+    SP -- "setFiltersToUrl()<br/>history.pushState" --> URL
+    URL -- "init() / popstate" --> SP
+```
+
+- **DOM ↔ Params**: every `change` event writes into the internal params; `updateDom()` pushes them
+  back into the form.
+- **Params → URL**: only `setFiltersToUrl()` and `resetUrl()` mutate the URL (one `pushState` each).
+- **URL → Params**: only on `init()` (page load) and `popstate` (Back / Forward).
+
+The point of routing everything through internal params is that you can edit the form many times and
+still produce **one** history entry on Apply. See [Architecture](/guide/architecture) for the full
+motion picture.
+
+## When you reach for it
 
 It targets a single, common UI pattern: a list/grid page with a form of filters on the side. You
 want:
@@ -22,9 +49,14 @@ want:
 ## What it does
 
 - Reads filter values from `location.search` on `init()` and applies them to the form.
-- Listens for `change` on every filter element; rewrites `URLSearchParams` accordingly.
-- On `setFiltersToUrl()`, pushes the current state via `history.pushState`.
+- Listens for `change` on every filter element and tracks the form state in an internal
+  `URLSearchParams`.
+- On `setFiltersToUrl()`, commits that internal state to the URL via `history.pushState`.
 - On `popstate`, resets the form and re-applies the URL filters.
+
+The split between internal state and the actual URL is deliberate — it lets you batch many edits
+into a single Apply click, which becomes one history entry. See
+[Reset & Apply](/guide/reset-and-apply) for the patterns.
 
 ## What it does not do
 

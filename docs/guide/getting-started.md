@@ -17,7 +17,7 @@ bundled TypeScript declarations.
 
 ## Minimal markup
 
-Two attributes are all you need: one on the form, one on each filter control.
+Two attributes are all you need on the form, plus an Apply button to commit changes to the URL.
 
 ```html
 <form data-filter-form="example">
@@ -35,7 +35,8 @@ Two attributes are all you need: one on the form, one on each filter control.
     <option value="popular">Popular</option>
   </select>
 
-  <button type="reset">Reset</button>
+  <button type="reset" data-filter-reset>Reset</button>
+  <button type="button" data-filter-apply>Apply</button>
 </form>
 ```
 
@@ -50,14 +51,25 @@ const filter = new Filter({
 });
 
 filter.init();
+
+document.querySelector('[data-filter-apply]')?.addEventListener('click', () => {
+  filter.setFiltersToUrl(new URL(window.location.href));
+});
+
+document.querySelector('[data-filter-reset]')?.addEventListener('click', () => {
+  filter.resetUrl();
+});
 ```
 
-That's it. Now:
+Now:
 
-- Checking a topic box appends `topic=news blog` to the URL.
-- Picking a sort option sets `sort=popular`.
-- Refreshing the page restores the filter state from the URL.
-- Pressing **Back** rewinds to the previous filter combination.
+- Toggling controls updates `Filter`'s internal state.
+- Clicking **Apply** writes the current state to the URL via `history.pushState` — this is what
+  produces shareable URLs and a real history entry.
+- Clicking **Reset** clears the form (native `<button type="reset">` behavior) and removes the
+  filter params from the URL.
+- Refreshing the page restores the form from the URL.
+- Pressing **Back / Forward** rewinds through previously committed filter combinations.
 
 ## CommonJS consumers
 

@@ -1,46 +1,40 @@
 ---
 title: Reset & Apply
 description:
-  How to wire reset and apply buttons and choose between change-driven and explicit URL updates with
-  @kassaila/filter-dom-url.
+  How to wire reset and apply buttons and use change events with @kassaila/filter-dom-url.
 ---
 
 # Reset & Apply
 
-The library writes to the URL on every `change` event by default. That's the right behavior for
-fast-feedback dashboards; it's the wrong behavior for forms with many fields where each intermediate
-state would create a useless history entry.
+The library keeps two pieces of state separate:
 
-You have two patterns.
+- An **internal `URLSearchParams`** that tracks what the form currently shows. It is updated on
+  every `change` event automatically.
+- The **actual URL** (`location.search`). It is only written by `setFiltersToUrl()` and
+  `resetUrl()`, never by change events.
 
-## Change-driven (default)
+That split is what lets you batch many field edits into a single history entry. To commit the
+internal state to the URL you call `setFiltersToUrl` — typically from an Apply button.
 
-Just call `init()` and you're done. Every checkbox tick / select change writes to the URL
-immediately.
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form
+    participant Filter
+    participant SP as Params
+    participant Hist as History
 
-```ts
-const filter = new Filter({
-  formAttr: 'data-filter-form="dashboard"',
-  filterAttr: 'data-filter',
-});
+    User->>Form: toggle or select
+    Form->>Filter: change event
+    Filter->>SP: write value
+    Note over Filter,SP: repeats per edit, URL untouched
 
-filter.init();
+    User->>Filter: click Apply
+    Filter->>Hist: pushState with SP
+    Note over Hist: one history entry per Apply
 ```
 
-A native `<button type="reset">` inside the form will clear the inputs; you'll typically pair it
-with `filter.resetUrl()` to clear the params too:
-
-```ts
-document.querySelector('[data-filter-reset]')?.addEventListener('click', () => {
-  filter.resetUrl();
-});
-```
-
-## Explicit apply
-
-If you'd rather batch multiple field changes into one history entry, prevent the change-driven
-behavior from being visible to the user by calling `setFiltersToUrl` only on an explicit Apply
-click:
+## Apply
 
 ```ts
 const filter = new Filter({
@@ -58,6 +52,38 @@ document.querySelector('[data-filter-apply]')?.addEventListener('click', () => {
 `setFiltersToUrl` performs a single `history.pushState` from the current form state, so only one
 history entry is created no matter how many fields the user changed.
 
+## Reset
+
+A native `<button type="reset">` inside the form clears the inputs. Pair it with `filter.resetUrl()`
+to clear the URL params at the same time:
+
+```ts
+document.querySelector('[data-filter-reset]')?.addEventListener('click', () => {
+  filter.resetUrl();
+});
+```
+
+Or call both explicitly if you don't have a native reset button:
+
+```ts
+filter.resetDom();
+filter.resetUrl();
+```
+
+## Auto-apply on every change
+
+If you want the URL to update on every change instead of only on Apply, listen for `change` yourself
+and call `setFiltersToUrl`:
+
+```ts
+$form.addEventListener('change', () => {
+  filter.setFiltersToUrl(new URL(window.location.href));
+});
+```
+
+Each change becomes its own history entry. Sensible for small forms; bad for forms with many fields
+where each keystroke or scrub would create a useless entry.
+
 ## Helper methods
 
 | Method         | Effect                                                                                       |
@@ -65,18 +91,18 @@ history entry is created no matter how many fields the user changed.
 | `resetDom()`   | `form.reset()` — clears the inputs but leaves the URL alone                                  |
 | `resetUrl()`   | Removes every known filter param from the URL via `pushState`                                |
 | `updateDom()`  | Re-reads the URL and pushes it into the form (use after URL writes from outside the library) |
-| `getFilters()` | Returns the parsed `{ [type]: string[] }` snapshot                                           |
+| `getFilters()` | Returns the parsed `{ [type]: string[] }` snapshot of the internal state                     |
 
 ## Combining with data fetching
 
-The library does not fetch data. Subscribe to your own change source — typically a `popstate`
-listener plus a one-shot read at app boot — and call your loader with `filter.getFilters()`:
+The library does not fetch data. Wire your loader to `popstate` plus your own commit point (Apply
+click, or every change if you went auto-apply), and call it with `filter.getFilters()`:
 
 ```ts
 const load = () => fetchResults(filter.getFilters());
 
 window.addEventListener('popstate', load);
-document.querySelector('[data-filter-form="search"]')!.addEventListener('change', load);
+document.querySelector('[data-filter-apply]')!.addEventListener('click', load);
 
 load();
 ```

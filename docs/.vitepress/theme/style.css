@@ -1,10 +1,3 @@
-:root {
-  --vp-c-brand-1: var(--vp-c-indigo-1);
-  --vp-c-brand-2: var(--vp-c-indigo-2);
-  --vp-c-brand-3: var(--vp-c-indigo-3);
-  --vp-c-brand-soft: var(--vp-c-indigo-soft);
-}
-
 .filter-demo {
   display: grid;
   gap: 1.5rem;
@@ -74,6 +67,11 @@
 .filter-demo__actions button[type='reset'] {
   background: transparent;
   color: var(--vp-c-brand-1);
+}
+
+.filter-demo__actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .filter-demo__state {

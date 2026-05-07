@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 Guidance for AI agents working in this repository. `@kassaila/filter-dom-url` is a tiny browser-only
-library that keeps DOM filter controls (`<input>`, `<select>`) in sync with `URLSearchParams` and
+library that keeps form filter controls (`<input>`, `<select>`) in sync with `URLSearchParams` and
 `window.history`.
 
 ## Commands
@@ -11,7 +11,7 @@ library that keeps DOM filter controls (`<input>`, `<select>`) in sync with `URL
 - `npm run lint` / `lint:fix` — ESLint flat config (typescript-eslint).
 - `npm run format` / `format:check` — Prettier.
 - `npm run check:types` — `tsc --noEmit`.
-- `npm run check:size` — size-limit (4 KB budget per format).
+- `npm run check:size` — size-limit (budget per format).
 - `npm run check:all` — full CI gate: format + lint + types + tests + build + size.
 - `npm run docs:dev` / `docs:build` / `docs:preview` — VitePress dev server / static build / preview
   of the built site.
