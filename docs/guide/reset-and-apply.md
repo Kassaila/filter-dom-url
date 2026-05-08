@@ -92,6 +92,7 @@ where each keystroke or scrub would create a useless entry.
 | `resetUrl()`   | Removes every known filter param from the URL via `pushState`                                |
 | `updateDom()`  | Re-reads the URL and pushes it into the form (use after URL writes from outside the library) |
 | `getFilters()` | Returns the parsed `{ [type]: string[] }` snapshot of the internal state                     |
+| `destroy()`    | Removes all `change` and `popstate` listeners added by `init()` — call on component teardown |
 
 ## Combining with data fetching
 

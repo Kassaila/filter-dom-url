@@ -39,13 +39,16 @@ host multiple independent forms (`data-filter-form="search"`, `data-filter-form=
 `filterAttr` is just the attribute name; the param key per control is whatever value you put on
 `data-filter="…"`.
 
-Call `init()` after construction to bind listeners and apply the URL state to the DOM.
+The constructor only stores `filterAttr` and `formAttr`. It does **not** touch the DOM or
+`window.location`. Call `init()` after construction to resolve the form element, seed internal URL
+state, bind listeners, and apply the URL state to the DOM.
 
 ## Instance methods
 
 ### `init(): void`
 
-- Verifies the form selector resolves to at least one element (throws otherwise).
+- Resolves the form element (`[${formAttr}]`) and seeds internal `url` / `urlFilters` from
+  `window.location`. Throws if the form selector does not match any element.
 - Applies the current URL state to the form.
 - Registers `change` listeners on every `[filterAttr]` control inside the form. These update the
   internal `URLSearchParams` only — they do **not** push to the actual URL. Call `setFiltersToUrl`
@@ -70,6 +73,22 @@ URL are preserved.
 ### `resetDom(): void`
 
 Calls `form.reset()`. Does not touch the URL.
+
+### `destroy(): void`
+
+Removes all `change` event listeners that were attached to filter elements during `init()`, and
+removes the `popstate` listener from `window`. Call this when tearing down the instance — for
+example inside a framework component's `unmount` / `onBeforeUnmount` hook — to avoid memory leaks
+and stale event handlers.
+
+```ts
+const filter = new Filter({ formAttr: 'data-filter-form="example"', filterAttr: 'data-filter' });
+
+filter.init();
+
+// later, when the component unmounts:
+filter.destroy();
+```
 
 ### `getFilters(): Record<string, string[]>`
 

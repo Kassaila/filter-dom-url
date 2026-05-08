@@ -22,20 +22,16 @@ export type FiltersMap = Record<string, string[]>;
 export class Filter {
   readonly filterAttr: string;
   readonly formAttr: string;
-  private $form: HTMLFormElement | null;
-  private url: URL;
-  private urlFilters: URLSearchParams;
+  private $form: HTMLFormElement | null = null;
+  private url!: URL;
+  private urlFilters!: URLSearchParams;
 
-  #checkAttrErrorMessage = `Filter initializing error.
-  Please enter correct attribute for DOM element`;
+  #changeHandlers = new Map<Element, (e: Event) => void>();
+  #onPopState: (() => void) | null = null;
 
   constructor(options: FilterOptions) {
     this.filterAttr = options.filterAttr;
     this.formAttr = options.formAttr;
-
-    this.$form = document.querySelector<HTMLFormElement>(`[${this.formAttr}]`);
-    this.url = new URL(window.location.href);
-    this.urlFilters = new URLSearchParams(decodeURIComponent(this.url.searchParams.toString()));
   }
 
   static checkFilterDomType($filter: Element): FilterDomType | null {
@@ -77,19 +73,18 @@ export class Filter {
   }
 
   #parseFiltersFromUrl(urlFilters: URLSearchParams): FiltersMap {
-    const filters = [...urlFilters.entries()];
     const objectFilters: FiltersMap = {};
 
-    if (filters.length === 0) {
-      return objectFilters;
-    }
-
-    new Map(filters).forEach((VALUES, type) => {
-      if (!this.#checkDomElementAttr(`${this.filterAttr}="${type}"`)) {
+    urlFilters.forEach((value, type) => {
+      if (!this.#checkDomElementAttr(`${this.filterAttr}="${CSS.escape(type)}"`)) {
         return;
       }
 
-      objectFilters[type] = VALUES.split(' ');
+      const incoming = value.split(' ');
+
+      objectFilters[type] = objectFilters[type]
+        ? [...new Set([...objectFilters[type], ...incoming])]
+        : incoming;
     });
 
     return objectFilters;
@@ -114,7 +109,7 @@ export class Filter {
     }
 
     Object.keys(objectFilters).forEach((type) => {
-      const $filter = $form.querySelector(`[${this.filterAttr}="${type}"]`);
+      const $filter = $form.querySelector(`[${this.filterAttr}="${CSS.escape(type)}"]`);
 
       if (!$filter) {
         return;
@@ -138,10 +133,8 @@ export class Filter {
           const $selectOptions = [...($filter as HTMLSelectElement).options];
 
           $selectOptions.forEach(($selectOption) => {
-            const $option = $selectOption;
-
-            if (objectFilters[type].indexOf($option.value) >= 0) {
-              $option.selected = true;
+            if (objectFilters[type].indexOf($selectOption.value) >= 0) {
+              $selectOption.selected = true;
             }
           });
 
@@ -149,7 +142,7 @@ export class Filter {
         }
         case 'radio': {
           const radio = $form.querySelector<HTMLInputElement>(
-            `[${this.filterAttr}="${type}"][value="${objectFilters[type][0]}"]`,
+            `[${this.filterAttr}="${CSS.escape(type)}"][value="${CSS.escape(objectFilters[type][0])}"]`,
           );
 
           if (radio) {
@@ -161,7 +154,7 @@ export class Filter {
         case 'checkbox': {
           objectFilters[type].forEach((value) => {
             const cb = $form.querySelector<HTMLInputElement>(
-              `[${this.filterAttr}="${type}"][value="${value}"]`,
+              `[${this.filterAttr}="${CSS.escape(type)}"][value="${CSS.escape(value)}"]`,
             );
 
             if (cb) {
@@ -212,7 +205,11 @@ export class Filter {
           .filter((option) => option.selected)
           .map((option) => option.value);
 
-        this.urlFilters.set(filterName, filterValues.join(' '));
+        if (filterValues.length > 0) {
+          this.urlFilters.set(filterName, filterValues.join(' '));
+        } else {
+          this.urlFilters.delete(filterName);
+        }
 
         break;
       }
@@ -221,7 +218,7 @@ export class Filter {
         const filterParams = `${this.urlFilters.get(filterName)}`.split(' ');
 
         if (this.urlFilters.has(filterName)) {
-          if (cb.checked) {
+          if (cb.checked && !filterParams.includes(cb.value)) {
             this.urlFilters.set(filterName, `${this.urlFilters.get(filterName)} ${cb.value}`);
           } else if (filterParams.length > 1) {
             this.urlFilters.delete(filterName);
@@ -255,9 +252,9 @@ export class Filter {
   }
 
   #resetUrl(): void {
-    Object.keys(this.#parseFiltersFromUrl(this.urlFilters)).forEach((filter) => {
-      this.urlFilters.delete(filter);
-    });
+    for (const key of [...this.urlFilters.keys()]) {
+      this.urlFilters.delete(key);
+    }
 
     this.#setFiltersToUrl(this.url, this.urlFilters);
   }
@@ -272,23 +269,30 @@ export class Filter {
     }
 
     this.$form.querySelectorAll(`[${this.filterAttr}]`).forEach(($filter) => {
-      $filter.addEventListener('change', (e) => {
-        this.#updateUrlFromFiltersDom(e);
-      });
+      const handler = (e: Event) => this.#updateUrlFromFiltersDom(e);
+
+      this.#changeHandlers.set($filter, handler);
+      $filter.addEventListener('change', handler);
     });
 
-    window.addEventListener('popstate', () => {
+    this.#onPopState = () => {
       this.#updateUrl();
 
       this.#resetDom();
 
       this.#updateFiltersDomFromUrl(this.urlFilters);
-    });
+    };
+
+    window.addEventListener('popstate', this.#onPopState);
   }
 
   init(): void {
+    this.$form = document.querySelector<HTMLFormElement>(`[${this.formAttr}]`);
+    this.url = new URL(window.location.href);
+    this.urlFilters = new URLSearchParams(this.url.searchParams);
+
     if (!this.#checkDomElementAttr(this.formAttr)) {
-      throw new Error(this.#checkAttrErrorMessage);
+      throw new Error('Filter initializing error. Please enter correct attribute for DOM element');
     }
 
     this.#updateFiltersDomFromUrl(this.urlFilters);
@@ -314,6 +318,19 @@ export class Filter {
 
   getFilters(): FiltersMap {
     return this.#parseFiltersFromUrl(this.urlFilters);
+  }
+
+  destroy(): void {
+    this.#changeHandlers.forEach((handler, $filter) => {
+      $filter.removeEventListener('change', handler);
+    });
+    this.#changeHandlers.clear();
+
+    if (this.#onPopState) {
+      window.removeEventListener('popstate', this.#onPopState);
+
+      this.#onPopState = null;
+    }
   }
 }
 
