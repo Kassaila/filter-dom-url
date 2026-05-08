@@ -58,8 +58,12 @@ stateDiagram-v2
     News --> Empty: uncheck news
 ```
 
-When the last value is removed, the param itself is dropped from the URL — there is no `?topic=`
-sitting empty.
+When the last value is removed, the param itself is **deleted** from the URL — there is no `?topic=`
+sitting empty. The same applies to `select-multiple`: deselecting all options removes the param
+entirely rather than writing an empty string.
+
+Checking a value that is already present in the URL param is a no-op — the library deduplicates
+before writing, so a value never appears twice in the space-joined string.
 
 ## `getFilters()` shape
 

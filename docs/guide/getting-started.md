@@ -71,6 +71,17 @@ Now:
 - Refreshing the page restores the form from the URL.
 - Pressing **Back / Forward** rewinds through previously committed filter combinations.
 
+## Teardown
+
+`init()` registers `change` listeners on every filter element and a `popstate` listener on `window`.
+Call `destroy()` to remove them when the page section or component is unmounted:
+
+```ts
+filter.destroy();
+```
+
+This is a no-op if `init()` was never called.
+
 ## CommonJS consumers
 
 ```js
