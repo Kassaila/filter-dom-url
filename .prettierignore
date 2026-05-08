@@ -1,0 +1,9 @@
+dist
+coverage
+node_modules
+.tmp
+docs/.vitepress/dist
+docs/.vitepress/cache
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+LICENSE

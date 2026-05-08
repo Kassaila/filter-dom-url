@@ -1,74 +1,95 @@
-# Filtering data with < input >, < select > & URLSearchParams
+# 🔗 filter-dom-url
 
-Make easy way for filtering data with URLSearchParams & different types of inputs, selects.
+> _Form state, mirrored to the URL. And back, when the user hits Back._
 
-[![npm](https://img.shields.io/npm/v/@kassaila/filter-dom-url.svg)](https://www.npmjs.com/package/@kassaila/filter-dom-url)
+[![npm version](https://img.shields.io/npm/v/@kassaila/filter-dom-url.svg)](https://www.npmjs.com/package/@kassaila/filter-dom-url)
+[![minzipped size](https://img.shields.io/bundlephobia/minzip/@kassaila/filter-dom-url)](https://bundlephobia.com/package/@kassaila/filter-dom-url)
+[![license](https://img.shields.io/npm/l/@kassaila/filter-dom-url.svg)](https://github.com/Kassaila/filter-dom-url/blob/master/LICENSE)
+[![docs](https://img.shields.io/badge/docs-VitePress-blue)](https://kassaila.github.io/filter-dom-url/)
 
-[![release](https://img.shields.io/github/release/kassaila/filter-dom-url.svg)](/releases)
-[![license](http://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![requests](http://img.shields.io/badge/PRs-welcome-green.svg)](/pulls)
+**Tiny browser library that keeps form filter controls in sync with `URLSearchParams` and
+`window.history`.**
 
-[![Build Status](https://travis-ci.org/Kassaila/filter-dom-url.svg?branch=master)](https://travis-ci.org/Kassaila/filter-dom-url)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Kassaila_filter-dom-url&metric=alert_status)](https://sonarcloud.io/dashboard?id=Kassaila_filter-dom-url)
+filter-dom-url turns a plain `<form>` into a **shareable, navigable, persistable filter UI** —
+without a state library, without a router, without a framework.
 
-## Example
+Form changes write to the URL via `history.pushState`. URL changes — including `popstate` from
+**Back / Forward** — replay back into the form. The `<form>` and `location.search` become two views
+of the same state.
 
-A simple [demo](https://kassaila.github.io/filter-dom-url/) of usage `filter-dom-url`
+    📋 Form  ⇄  🔗 URLSearchParams  ⇄  🕓 history
 
-See the code of an example - [HTML](https://github.com/Kassaila/filter-dom-url/blob/master/docs/index.html), [JS](https://github.com/Kassaila/filter-dom-url/blob/master/examples/src/js/app.js)
+## ✨ Features
 
-## Overview
+- 🗜️ **Tiny & zero-dep** — single TypeScript file, **< 1.5 KB min+brotli**. No runtime dependencies.
+- 🔄 **Two-way sync** — DOM `change` writes to the URL; `popstate` replays URL state back into the
+  form.
+- 🧩 **Input types** — `select`, `select multiple`, and `<input type="...">` for `checkbox`,
+  `radio`, `color`, `range`, `date`, `month`, `week`, `time`.
+- 🪶 **Vanilla DOM** — works with `<form>` element, no framework adapters required.
+- 📜 **Stable wire format** — multi-value filters serialized as space-joined strings under a single
+  param key, not repeated keys.
+- 🎯 **Apply / Reset** — explicit commit and clear actions for forms with deferred submission.
+- 📦 **ESM + CJS** — dual entries with bundled `.d.ts` / `.d.mts` declarations and sourcemaps.
+  `sideEffects: false`.
+- 🔒 **Type-safe** — full TypeScript types, named and default exports, static classifier for DOM
+  elements.
 
-### Supported DOM elements types
+## 📦 Installation
 
-For tag `input`:
-
-`<input type="...">` - `['checkbox', 'radio', 'color', 'range', 'date', 'month', 'week', 'time']`
-
-For tag `select`:
-
-`<select>` & `<select multiple>`
-
-### HTML structure
-
-Minimal structure for `filter-dom-url` initializing:
-
+```bash
+npm install @kassaila/filter-dom-url
 ```
-<form data-filter-form="form-example">
-  <input value="value-example" data-filter="type-example" type="checkbox">
+
+## 🚀 Quick Start
+
+```html
+<form data-filter-form="example">
+  <label>
+    <input value="news" data-filter="topic" type="checkbox" />
+    News
+  </label>
+  <select data-filter="sort">
+    <option value="latest">Latest</option>
+    <option value="popular">Popular</option>
+  </select>
+  <button type="reset" data-filter-reset>Reset</button>
+  <button type="button" data-filter-apply>Apply</button>
 </form>
 ```
 
-### Install
-
-Install package from [npm](https://www.npmjs.com/package/@kassaila/filter-dom-url) and import:
-
-```
+```ts
 import Filter from '@kassaila/filter-dom-url';
-```
 
-or copy [file](https://github.com/Kassaila/filter-dom-url/blob/master/dist/filter-dom-url.js) or [file.min](https://github.com/Kassaila/filter-dom-url/blob/master/dist/filter-dom-url.min.js) to your project and import:
-
-```
-import Filter from 'dist/filter-dom-url';
-```
-
-### Usage
-
-Create `Filter` instance:
-
-```
-const filterExample = new Filter({
-  formAttr: 'data-filter-form="form-example"',
+const filter = new Filter({
+  formAttr: 'data-filter-form="example"',
   filterAttr: 'data-filter',
+});
+
+filter.init();
+
+document.querySelector('[data-filter-apply]')?.addEventListener('click', () => {
+  filter.setFiltersToUrl(new URL(window.location.href));
+});
+
+document.querySelector('[data-filter-reset]')?.addEventListener('click', () => {
+  filter.resetUrl();
 });
 ```
 
-## API
+`Filter` tracks form changes in an internal `URLSearchParams`. **Apply** commits that state to
+`location.search` via `history.pushState` — that's what makes the URL shareable and **Back /
+Forward** rewind through committed states. **Reset** clears form + URL together.
 
-| Parameter | Type | Arguments | Description |
-| --- | --- | --- | --- |
-| ***init()*** | function | - | Instance initialization |
-| ***updateDom()*** | function | - | Update DOM elements (filters) from URL |
-| ***setFiltersToUrl(newUrl)*** | function | ***newUrl*** - object (URL prototype). Base page URL, you can set from window.location | Set URLSerchParams to your page URL |
-| ***getFilters()*** | function | - | Get object with filters data - `{ filter-type: ['filter-value'] }` |
+## 📖 Documentation
+
+**[View full documentation](https://kassaila.github.io/filter-dom-url/)** — getting started,
+supported elements, URL serialization, API reference, and a live demo covering every input type.
+
+## 🤝 Contributing
+
+Contributions are welcome! See **[CONTRIBUTING.md](./CONTRIBUTING.md)** for guidelines.
+
+## 📄 License
+
+MIT
