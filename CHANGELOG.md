@@ -2,37 +2,47 @@
 
 ## 0.6.0
 
-### Tooling overhaul (no public API change)
+### Added
 
-The runtime contract of the published package is unchanged:
-`import Filter from '@kassaila/filter-dom-url'` and `require('@kassaila/filter-dom-url').default`
-both return the same `Filter` class with the same methods. Direct loading of
-`dist/filter-dom-url.js` continues to work as a CJS file at the same path.
+- `destroy()` — removes all `change` listeners registered on filter elements and the `popstate`
+  listener on `window`. Call when the page section or component is unmounted to avoid listener leaks
+  during SPA navigation or hot-reload.
+- ESM output (`dist/filter-dom-url.mjs`) alongside the existing CJS entry.
+- TypeScript declarations (`.d.ts` / `.d.mts`) bundled with the package.
+- Named export: `Filter` is now exported both as `default` and as a named export.
+- vitest + happy-dom test suite covering the public API, URL ↔ DOM round-trips for every supported
+  type, popstate, and reset paths. Coverage ≥93%.
+- `size-limit` bundle budget (4 KB per format).
 
-- **Build:** Gulp 4 + Babel 7 + `babel-preset-minify` → tsup (esbuild). Output is now minified
-  `dist/filter-dom-url.js` (CJS) and `dist/filter-dom-url.mjs` (ESM), each with sourcemaps and
-  TypeScript declarations (`.d.ts` / `.d.mts`).
-- **Source:** ported `src/index.js` → `src/index.ts`. `Filter` is now exported both as `default` and
-  as a named export.
-- **Tests:** added vitest + happy-dom suite covering the public API, URL ↔ DOM round-trips for every
-  supported type, popstate, and reset paths. Coverage ≥93%.
-- **Lint/format:** ESLint flat config (`eslint-plugin-kassaila/configs/ts`)
-  - Prettier 3 + lint-staged.
-- **Hooks/CI:** husky pre-commit + commitlint (Conventional Commits). GitHub Actions `ci.yml` and
-  `release.yml` replace the old Travis config.
-- **Bundle budget:** `size-limit` 4 KB per format.
-- **Engines:** dev requirement raised to Node `>=24`.
+### Changed
 
-### Breaking
+- Build: Gulp 4 + Babel 7 + `babel-preset-minify` → tsup (esbuild). Output is minified with
+  sourcemaps. Browser baseline raised to ES2020.
+- Source: ported `src/index.js` → `src/index.ts`.
+- Lint/format: ESLint flat config (`eslint-plugin-kassaila/configs/ts`) + Prettier 3 + lint-staged.
+- CI: GitHub Actions `ci.yml` and `release.yml` replace the old Travis config. Husky pre-commit +
+  commitlint (Conventional Commits) added.
+- Dev engine requirement raised to Node `>=24`.
+- `#parseFiltersFromUrl` — duplicate URL keys are now merged and deduplicated via `Set` instead of
+  silently dropped (previously `new Map()` kept only the last value).
+- Constructor no longer resolves `$form`, `url`, or `urlFilters` — deferred to `init()`.
 
-- `dist/filter-dom-url.min.js` is no longer published. The `dist/filter-dom-url.js` artifact is now
-  production-ready (minified) on its own. Sourcemaps replace the unminified variant for debugging.
-  The npm-import / npm-require flow is unchanged.
-- Browser baseline raised from ES5 (old Babel `forceAllTransforms`) to ES2020. `.browserslistrc` is
-  removed.
+### Fixed
+
+- CSS injection — URL search-param keys and values interpolated into `querySelector` attribute
+  selectors are now escaped with `CSS.escape()`. A crafted URL with `"` or `]` in a param key could
+  previously break the selector or match unintended elements.
+- `select-multiple` empty deselect — deselecting all options now deletes the URL param instead of
+  writing an empty string (`key=`).
+- Checkbox deduplication — a synthetic `change` event on an already-checked checkbox no longer
+  duplicates its value in the space-joined URL param.
+- `URLSearchParams` double-decode — the constructor called
+  `decodeURIComponent(searchParams.toString())` before re-parsing, corrupting percent-encoded values
+  (e.g. `%2B` → space). Now uses `new URLSearchParams(this.url.searchParams)`.
 
 ### Removed
 
+- `dist/filter-dom-url.min.js` — replaced by the minified `dist/filter-dom-url.js`.
 - `gulp`, `gulp-config.js`, `tasks/`, `helpers/`, `system_files/`.
 - `@babel/*` toolchain, `babel-preset-minify`.
 - `.eslintrc`, `eslint-config-airbnb-base`, `.eslintignore`, `.browserslistrc`, `.travis.yml`.

@@ -1,7 +1,7 @@
 {
   "name": "@kassaila/filter-dom-url",
   "version": "0.6.0",
-  "description": "Filtering data with input, select & URL (URLSearchParams)",
+  "description": "Keeps form filter controls in sync with URLSearchParams and window.history",
   "sideEffects": false,
   "main": "./dist/filter-dom-url.js",
   "module": "./dist/filter-dom-url.mjs",
@@ -48,7 +48,7 @@
   },
   "publishConfig": {
     "access": "public",
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://registry.npmjs.org"
   },
   "engines": {
     "node": ">=24.0.0"
